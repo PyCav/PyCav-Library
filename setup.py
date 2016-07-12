@@ -26,7 +26,7 @@ setup(
 
         'Intended Audience :: Education',
         'Topic :: Education',
-        'Topic :: Scientific/Engineering :: Physics'
+        'Topic :: Scientific/Engineering :: Physics',
 
         'License :: OSI Approved :: BSD License',
 
