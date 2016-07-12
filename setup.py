@@ -14,7 +14,7 @@ setup(
     description='PyCav module',
     long_description=long_description,
 
-    url=' ',
+    url='https://github.com/PyCav/PyCav-Module',
 
     author='PyCav team 2016',
     author_email=' ',
