@@ -1,0 +1,5 @@
+The easiest way to install PyCav would be using pip:
+In Command Prompt(Windows) or Terminal(Mac/Linux), run the following command:
+pip install pycav
+
+Vpython should be installed for visualization, although it is not required.
