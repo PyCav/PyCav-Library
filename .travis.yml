@@ -7,7 +7,7 @@ install: "pip install -r requirements.txt"
 
 script:
     - python setup.py sdist bdist_wheel
-    - source deactivate
+    - deactivate
 
 deploy:
     # test pypi
@@ -24,7 +24,7 @@ deploy:
 
     # production pypi
   - provider: pypi
-    distributions: sdist
+    distributions: sdist bdist_wheel
     user: "pycav"
     password:
       secure: "MgTY3iLl8pF7N5JGE75KTNTf7qYtDzug9GMSFveTmDXTnZ3OCGN2Ck18FOOC9D9L4f2jJb/mUYODTonTYp4jQWiwF/X+f/XgM+SmWITtyU+ion5SIB1UoR+KZrGZ/+NQpU9vMa4gEOnbBJKwbOVkZTiGg2muNQEZR5V0Kl2zxygSRqv9OrivGkigQbbTm3Tn9nE468/Ps4ouqOfVXfHDIG9WEavo0pVswWxlxvy6wvguFrvwaK15K/2v442Rbjg7vB0k90NYfSa6KQ3/m7yHgAVxWF2rI2lzMuvCBQ8Yc20LY5bgKoR2sUI9ya0uy+2WziO2ZVjzuvKjqD9u+6RCq4KWze9cDfhGW9PJxICYzQDrJoV/CebPFMZEYhFjr87vGIs3Lf9o6ZlG02QIdI3BzmiKkTii0TppmMyzj9ai2aDmp1mIYuuX06JMk1EIEox78oTCuS444zDS6eObPa9AY15VRF5DctDfiSmtSd3EGHuMF1a7zWeRJq7ekpfUhN+43PbbjpXyEqqPSUfH77d36oVawFqIpU3tIO10rW0bDLP+zFcKfi9b2Yy/FyfVAWik/jP/13nEpK9/BjYctPQT60GHq89tfZsr4BBfPF9yA9z485skTaaHGlmV8s3YpKAAsKDrR5Nz/tApNN6UbSOWPyPZNu54xtUYRcPP/NFqMrI="
