@@ -23,7 +23,7 @@ def numerov(x,dx,V,E,initial_values,params):
         
     return psi
 
-def bisection_search(x,dx,V,E,params,bracket_E,tolerance = 0.5, max_evals = 1000):
+def bisection_search(x,dx,V,params,bracket_E,tolerance = 0.5,max_evals = 1000):
     N = 0
     boundary = False
     def _boundary_check(val):
@@ -32,12 +32,12 @@ def bisection_search(x,dx,V,E,params,bracket_E,tolerance = 0.5, max_evals = 1000
         else:
             return False
     
-    order_bracket = np.sign(numerov(x,dx,V,E,[0.,dx],bracket_E[0])[-1])
+    order_bracket = np.sign(numerov(x,dx,V,bracket_E[0],[0.,dx],params)[-1])
     
     while not boundary:
         N += 1
         E_bisect = (bracket_E[0]+bracket_E[1])/2.0
-        psi = numerov(x,dx,V,E,[0.,dx],E_bisect)
+        psi = numerov(x,dx,V,E_bisect,[0.,dx],params)
         boundary = _boundary_check(psi[-1])
         if not boundary:
             if order_bracket*psi[-1] < 0:
