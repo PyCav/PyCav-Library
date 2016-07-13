@@ -5,6 +5,10 @@ python:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 
+script:
+  # Try building wheel
+  -python setup.py bdist_wheel
+
 deploy:
     # test pypi
   - provider: pypi
