@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='PyCav',
 
-    version='1.0.0a1',
+    version='1.0.0a2',
 
     description='PyCav module',
     long_description=long_description,
@@ -43,6 +43,8 @@ setup(
 
     packages=['pycav'],
 
-    install_requires=['numpy>=1.1'],
+    install_requires=['numpy>=1.1',
+    'matplotlib',
+    'scipy'],
 
 )
