@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='PyCav',
 
-    version='1.0.0a2',
+    version='1.0.0a4',
 
     description='PyCav module',
     long_description=long_description,
