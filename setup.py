@@ -12,6 +12,11 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     name='PyCav',
 
+<<<<<<< HEAD
+=======
+    version='1.0.0a4',
+
+>>>>>>> master
     description='PyCav module',
     long_description=long_description,
 
