@@ -5,6 +5,7 @@ from copy import copy
 import matplotlib.pyplot as plt
 
 def numerov(x,dx,V,E,initial_values,params):
+    steps = x.shape[0]
     psi = np.zeros(steps+1)
     psi[:2] = initial_values
     
