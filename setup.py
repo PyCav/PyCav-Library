@@ -1,3 +1,4 @@
+import versioneer
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
@@ -7,10 +8,10 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     name='PyCav',
-
-    version='1.0.0a4',
-
+    
     description='PyCav module',
     long_description=long_description,
 
