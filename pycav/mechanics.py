@@ -9,17 +9,6 @@ from random import *
 vpython = None
 
 
-class PyCavError (Exception):
-    """
-    Error type for errors from this module
-    """
-    def __init__(self, exception_type):
-        self.exception_type = exception_type
-
-    def __str__(self):
-        return repr(self.exception_type)
-
-
 def no_force(pos, time):
     """
     We can apply some time/position-dependent force to each particle.
@@ -353,7 +342,7 @@ class Container(object):
         return True
 
 
-class Domain(Container):
+class _Domain(Container):
     def __init__(self, pos, dimension):
         """
         Class used for collision detection, by splitting up containers into small domains.
@@ -434,11 +423,13 @@ class Spring(object):
         Parameters
         ----------
         particle_1: Particle object
-            Particle on one end of spring.
+            Particle on one end of spring
         particle_2: Particle object
-            Particle on other end of spring.
+            Particle on other end of spring
         k: float
             The spring constant of the spring (F = kx)
+        l0: float
+            Original length of the spring
         radius: float
             Radius of spring.
         color: array
@@ -796,7 +787,7 @@ class System(object):
             The inverse mass of these particles.
         """
         if not self.container:
-            raise PyCavError("No container in system")
+            raise RuntimeError("No container in system")
         else:
             for i in range(0, number):
                 l = self.container.dimension - radius * 2
@@ -913,7 +904,7 @@ class System(object):
         Helper function for setup_domains(), made so that @np.vectorize can be used for faster execution
         """
         pos = np.array([x, y, z])
-        self.domains.append(Domain(pos, self.domain_size))
+        self.domains.append(_Domain(pos, self.domain_size))
 
     def _assign_particles_to_domains(self):
         """
