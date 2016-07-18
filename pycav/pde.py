@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.linalg import solve_banded
+from scipy.fftpack import fft,ifft
 
 def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_grad = None, init_vel = None):
 
@@ -387,3 +388,50 @@ def CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0]):
 	_main_step()
 
 	return T,t
+
+def split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., m = 1.0):
+	len_x = psi_0.shape[0]
+
+	x = x_0 + dx*np.arange(len_x)
+
+	dk = (2*np.pi)/(len_x*dx)
+	k = -np.pi/dx+dk*np.arange(len_x)
+
+	V_n = V(x)
+
+	psi_x = np.zeros((len_x,N), dtype = np.complex128)
+	psi_k = np.zeros((len_x,N), dtype = np.complex128)
+
+	psi_x[:,0] = psi_0
+
+	psi_mod_x = np.zeros((len_x), dtype = np.complex128)
+	psi_mod_k = np.zeros((len_x), dtype = np.complex128)
+
+	def _compute_psi_mod(j):
+		return (dx/np.sqrt(2*np.pi))*psi_x[:,j]*np.exp(-1.0j*k[0]*x)
+
+	def _compute_psi(j):
+		psi_x[:,j] = (np.sqrt(2*np.pi)/dx)*psi_mod_x*np.exp(1.0j*k[0]*x)
+		psi_k[:,j] = psi_mod_k*np.exp(1.0j*m*x[0]*dk*np.arange(len_x))	
+
+	def _x_half_step(ft = True):
+		if ft == True:
+			psi_mod_x[:] = ifft(psi_mod_k[:])
+		psi_mod_x[:] = psi_mod_x[:]*np.exp(-1.0j*(dt/2.)*V_n)
+
+	def _k_full_step():
+		psi_mod_k[:] = fft(psi_mod_x[:])
+		psi_mod_k[:] = psi_mod_k[:]*np.exp(-1.0j*k**2*dt/(2.*m))
+
+	def _main_loop():
+		psi_mod_x[:] = _compute_psi_mod(0)
+
+		for i in range(N-1):
+			_x_half_step(ft = False)
+			_k_full_step()
+			_x_half_step()
+			_compute_psi(i+1)
+
+	_main_loop()
+
+	return psi_x,psi_k,k
