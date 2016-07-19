@@ -1,17 +1,32 @@
 import versioneer
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 from codecs import open
 from os import path
+have_cython = False
+try:
+    from Cython.Distutils import build_ext
+    have_cython = True
+except ImportError:
+    from distutils.command.build_ext import build_ext
+
+mechanics = None
+if have_cython:
+    mechanics = Extension('pycav.mechanics', ['pycav/mechanics.pyx'])
+else:
+    mechanics = Extension('pycav.mechanics', ['pycav/mechanics.c'])
 
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+cmds = versioneer.get_cmdclass()
+cmds["build_ext"] = build_ext
+
 setup(
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    cmdclass=cmds,
     name='PyCav',
-    
+   
     description='PyCav module',
     long_description=long_description,
 
@@ -42,6 +57,7 @@ setup(
 
     keywords='physics simulation education',
 
+    ext_modules=[mechanics],
     packages=['pycav'],
 
     install_requires=['numpy>=1.1',
