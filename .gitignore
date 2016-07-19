@@ -2,3 +2,5 @@ PyCav.egg-info
 dist
 build
 docs/build
+__pycache__
+pycav/mechanics.c
