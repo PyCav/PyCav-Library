@@ -5,7 +5,7 @@ from copy import copy
 import matplotlib.pyplot as plt
 
 def numerov(x,dx,V,E,initial_values,params):
-    steps = x.shape[0]
+    steps = x.shape[0]-1
     psi = np.zeros(steps+1)
     psi[:2] = initial_values
     
@@ -16,7 +16,7 @@ def numerov(x,dx,V,E,initial_values,params):
         return (1.+g_n(n)*dx**2/12.)
     
     def inv_phi(phi,n):
-        return phi/f_n(i+1)
+        return phi/f_n(n)
     
     for i in range(1,steps):
         phi_2 = (12.-10.*f_n(i))*psi[i]-f_n(i-1)*psi[i-1]

@@ -1,8 +1,8 @@
 ######
 PyCav
 ######
-.. image:: https://travis-ci.org/PyCav/PyCav-Module.svg?branch=master
-    :target: https://travis-ci.org/PyCav/PyCav-Module
+.. image:: https://travis-ci.org/PyCav/PyCav-Library.svg?branch=master
+    :target: https://travis-ci.org/PyCav/PyCav-Library
 
 .. image:: https://readthedocs.org/projects/pycav/badge/?version=latest
     :target: http://pycav.readthedocs.io/en/latest/?badge=latest
