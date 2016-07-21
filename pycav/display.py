@@ -25,4 +25,4 @@ def anim_to_html(anim):
 
 def display_animation(anim):
     plt.close(anim._fig)
-    HTML_video = HTML(anim_to_html(anim))
+    return HTML(anim_to_html(anim))
