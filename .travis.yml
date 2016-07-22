@@ -8,7 +8,6 @@ install: "pip install -r requirements.txt"
 script:
   # Try building wheel
   - cython pycav/mechanics.pyx
-  - python setup.py bdist_wheel
 
 deploy:
     # test pypi
