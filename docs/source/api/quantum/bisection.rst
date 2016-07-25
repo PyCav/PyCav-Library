@@ -3,13 +3,13 @@ Bisection Search
 
 We wish to find a function \\(f(E) = 0\\). First we must find values of \\(E\\) which bracket the solution, that is:
 $$f(E_1) < 0,  f(E_2) > 0$$
-Evaluating \\(f\\) at the midpoint \\(E_3 = \\frac{1}{2}(E_1+E_2)\\), depending on the result we can rebracket our solution. Hence the solution will be converged about with many iterations. Solutions can converge from both above and below \\(0\\) so your search algorithm should account for this.
+By evaluating \\(f\\) at the midpoint, \\(E_3 = \\frac{1}{2}(E_1+E_2)\\), we can rebracket our solution. Hence the solution will be converge on iteration. Solutions can converge from both above and below \\(0\\), so your search algorithm should account for this.
 
-The search should be stopped when \\(\\left| \ f(E)\\right| < \\epsilon\\) where \\(\\epsilon\\) is a suitably small number.
+The search should stop when \\(\\left| \ f(E)\\right| < \\epsilon\\) where \\(\\epsilon\\) is a suitably small number.
 
 .. image:: ../images/shooting_search.png
 
-Dotted lines show the bracket solutions and the solid lines show the progression of the search to obtain the ground state of the infinite square well
+Dotted lines show the bracket solutions and the solid lines show the progression of the search to obtain the ground state of the potential.
 
 bisection_search(x,dx,V,params,bracket_E,tolerance = 0.5,max_evals = 1000)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -20,19 +20,19 @@ bisection_search(x,dx,V,params,bracket_E,tolerance = 0.5,max_evals = 1000)
 
    *x: numpy array*
 
-   An N element numpy array of equally spaced points in space (creating using numpy linspace is advised) at which the wavefunction will be evaluated
+   An N element numpy array of equally spaced points (creating using numpy linspace is advised) at which the wavefunction will be evaluated
 
    *dx: float*
 
-   Must give the spacing between points in the x array
+   The spacing between points in the x array
    
    *V: function*
    
-   Pass a function which takes x as an argument and returns the value of potential at that point, V(x)
+   Function which takes x as an argument and returns the value of potential at that point, V(x)
 
    *params: list*
    
-   List which can be used within your code to hold various physical parameter. The first element is required to be equal to the particle mass but apart from this size of the list and the other parameters are not called
+   List which can be used within your code to hold various physical parameters. The first element is required to be equal to the particle mass, but apart from this the size of the list and the other parameters are not called
 
    *bracket_E: list*
 
@@ -40,7 +40,7 @@ bisection_search(x,dx,V,params,bracket_E,tolerance = 0.5,max_evals = 1000)
 
    *tolerance: float*
 
-   The tolerance of the bisection search i.e. if the absolute value of the wavefunction at right hand boundary is less than the tolerance then the search is complete.
+   The tolerance of the bisection search i.e. if the absolute value of the wavefunction at the right-hand boundary is less than the tolerance then the search is complete.
 
    *max_evals: int*
 
