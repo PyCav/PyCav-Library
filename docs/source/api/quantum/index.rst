@@ -4,7 +4,20 @@ Quantum
 Introduction to the Quantum module
 --------------------------
 
-This module contains functions for the use in 1st order perturbation theory calculations and solving 1d boundary value problems using the Shooting method. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. The list below summarises the functions, their input arguments and their outputs for quick reference for the informed user:
+This module contains functions for the use in 1st order perturbation theory calculations and solving 1d boundary value problems using the Shooting method. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. 
+
+In-depth Documentation
+-------
+
+.. toctree::
+   :maxdepth: 1
+
+   numerov
+   bisection
+   perturbation
+   plotting
+
+The list below summarises the functions, their input arguments and their outputs for quick reference for the informed user:
 
 Functions
 ---------
