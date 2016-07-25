@@ -6,7 +6,7 @@ In units where \\(\\hbar = 1 \\), the 1D TISE can be expressed in the form:
 $$ \\frac{d^2 \\psi}{dx^2} = -2m\\left(E - V(x) \\right) \\psi = -g(x) \\psi $$
 
 
-This differential equation can be solved numerically via Numerov's method ('see page 10 - 11 <http://www.fisica.uniud.it/~giannozz/Corsi/MQ/LectureNotes/mq-cap1.pdf>'_). For a 1D spatial grid, the wavefunction at the \\(n+1$th point along can be approximated by:
+This differential equation can be solved numerically via Numerov's method ('see <http://www.fisica.uniud.it/~giannozz/Corsi/MQ/LectureNotes/mq-cap1.pdf>'_  pages 10 - 11). For a 1D spatial grid, the wavefunction at the \\(n+1\\)th point along can be approximated by:
 
 $$ \\psi_{n+1} = \\frac{(12-10f_n) \\ \\psi_n-f_{n-1}\\psi_{n-1}}{f_{n+1}} $$
 
