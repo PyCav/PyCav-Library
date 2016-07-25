@@ -22,7 +22,7 @@ For first_order_wf, \\(I_{mn} = \\langle m^{(0)} | \\hat{H}' | n^{(0)} \\rangle 
 If return_list is set to True, the list of m values used in the sum is returned along with the corresponding \\(I_{mn}\\) values.
 
 The perturbed wavefunction is calculated within the function using the following sum:
-$$ | n^{(1)} \\rangle  |n^{(0)} \\rangle + \\sum_{k \\in k_{list}} I_{kn} \ |k^{(0)} \\rangle $$
+$$ | n^{(1)} \\rangle  | n^{(0)} \\rangle + \\sum_{k \\in k_{list}} I_{kn} \ | k^{(0)} \\rangle $$
 This is returned as a function of position i.e.
 
 .. code-block:: python
