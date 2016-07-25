@@ -10,7 +10,7 @@ First order energy shift:
 $$ \\Delta E_n^{(1)} = \\langle n^{(0)} | \\hat{H}' | n^{(0)} \\rangle$$
 
 First order perturbed wavefunctions:
-$$ |n^{(1)}\\rangle \\approx | n^{(0)} \\rangle + \\sum_{m \\neq n} | m^{(0)} \\rangle \\frac{\\langle m^{(0)} | \\hat{H}' | n^{(0)} \\rangle}{E_n^{(0)}-E_m^{0}}$$
+$$ |n^{(1)}\\rangle \\approx | n^{(0)} \\rangle + \\sum_{m \\neq n} | m^{(0)} \\rangle \\frac{\\langle m^{(0)} | \\hat{H}' | n^{(0)} \\rangle}{E_n^{(0)}-E_m^{(0)}}$$
 
 Evaluating inner products are done using an integration over space i.e.
 $$ \\langle n^{(0)} | \\hat{H}' | n^{(0)} \\rangle = \\int_{x_{min}}^{x_{max}} \\psi_{n}^{(0)}(x) \\hat{H}'(x) \\psi_{n}^{(0)}(x) dx $$
@@ -60,7 +60,7 @@ first_order_energy_sft(n,H,unperturb_wf,params,limits = [-np.inf,np.inf])
 first_order_wf(n,H,unperturb_wf,unperturb_erg,params,tolerance = 0.01, limits = [-np.inf,np.inf], return_list = False)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   Calculates the 1st order perturbed wavefunction for a given unperturbed system and the applied perturbation. The system is defined by its known unperturbed wavefunctions and energies. This function takes similar parameters as first_order_energy_sft (see above) so only new parameters will be defined. Further documentation can be found on the functions documentation page
+   Calculates the 1st order perturbed wavefunction for a given unperturbed system and the applied perturbation. The system is defined by its known unperturbed wavefunctions and energies. This function takes similar parameters as first_order_energy_sft (see above) so only new parameters will be defined.
 
    **Unique Parameters:**
 
