@@ -108,23 +108,45 @@ def first_order_wf(n,H,unperturb_wf,unperturb_erg,params,tolerance = 0.01, limit
 
     def find_k_values(even,k_list,I_list):
         truncate = False
+        ascending = True
         if even:
-            k = 0
+            k = n+2
         else:
-            k = 1
+            k = n+1
         while not truncate:
             if n != k:
-                I, I_err = quad(combine_functions(n,k),limits[0],limits[1])
-                E_nk = E_diff(n,k)
-        
-                if abs(I/E_nk) < tolerance:
+                if k < 2 and ascending == False:
                     truncate = True
+
                 else:
-                    I_list.append(I/E_nk)
-                    k_list.append(k)
-                    k += 2
+                    I, I_err = quad(combine_functions(n,k),limits[0],limits[1])
+                    E_nk = E_diff(n,k)
+        
+                    if abs(I/E_nk) < tolerance:
+                        if n > 2 and ascending == True:
+                            if even:
+                                k = n-2
+                            else:
+                                k = n-1
+                        ascending = False
+
+                        else:
+                            truncate = True
+                    else:
+                        I_list.append(I/E_nk)
+                        k_list.append(k)
+
+                        if ascending == True:
+                            k += 2
+                        elif ascending == False:
+                            k -= 2
+
             else:
-                k += 2
+                if ascending == True:
+                    k += 2
+                elif ascending == False:
+                    k -= 2
+
         return k_list,I_list
     
     k_list = []
