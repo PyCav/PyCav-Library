@@ -2,7 +2,7 @@ Bisection Search
 ====================================
 
 We wish to find a function \\(f(E) = 0\\). First we must find values of \\(E\\) which bracket the solution, that is:
-$$f(E_1) > 0,  f(E_2) > 0$$
+$$f(E_1) < 0,  f(E_2) > 0$$
 Evaluating \\(f\\) at the midpoint \\(E_3 = \\frac{1}{2}(E_1+E_2)\\), depending on the result we can rebracket our solution. Hence the solution will be converged about with many iterations. Solutions can converge from both above and below \\(0\\) so your search algorithm should account for this.
 
 The search should be stopped when \\(\\left| \ f(E)\\right| < \\epsilon\\) where \\(\\epsilon\\) is a suitably small number.
