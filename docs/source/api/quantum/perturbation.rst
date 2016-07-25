@@ -10,14 +10,16 @@ First order energy shift:
 $$ \\Delta E_n^{(1)} = \\langle n^{(0)} | \\hat{H}' | n^{(0)} \\rangle$$
 
 First order perturbed wavefunctions:
-$$ |n^{(1)} \\rangle \\approx | n^{(0)} \\rangle +  | m^{(0)} \\rangle \\frac{\\langle m^{(0)} | \\hat{H}' | n^{(0)} \\rangle}{E_n^{(0)}-E_m^{(0)}} $$
+$$ |n^{(1)} \\rangle  | n^{(0)} \\rangle +  | m^{(0)} \\rangle \\frac{\\langle m^{(0)} | \\hat{H}' | n^{(0)} \\rangle}{E_n^{(0)}-E_m^{(0)}} $$
 
 Evaluating inner products are done using an integration over space i.e.
 $$ \\langle n^{(0)} | \\hat{H}' | n^{(0)} \\rangle = \\int_{x_{min}}^{x_{max}} \\psi_{n}^{(0)}(x) \\hat{H}'(x) \\psi_{n}^{(0)}(x) dx $$
 
 These are calculated using SciPy's quad integration function.
 
-For first_order_wf, \\(I_{mn} = \\langle m^{(0)} | \\hat{H}' | n^{(0)} / E_n^{(0)}-E_m^{(0)}\\) is calculated for m values around n until \\(I_{mn} < \\epsilon\\), where \\(\\epsilon\\) is the given tolerance. Two seperate iterations are run for even and odd values of m around n as the form of the perturbation may cause inner products to vanish for certain configurations of even/odd wavefunctions. If return_list is set to True, the list of m values used in the sum is returned along with the corresponding \\(I_{mn}\\) values.
+For first_order_wf, \\(I_{mn} = \\langle m^{(0)} | \\hat{H}' | n^{(0)} \\rangle / (E_n^{(0)}-E_m^{(0)})\\) is calculated for m values around n until \\(I_{mn} < \\epsilon\\), where \\(\\epsilon\\) is the given tolerance. Two seperate iterations are run for even and odd values of m around n as the form of the perturbation may cause inner products to vanish for certain configurations of even/odd wavefunctions. 
+
+If return_list is set to True, the list of m values used in the sum is returned along with the corresponding \\(I_{mn}\\) values.
 
 The perturbed wavefunction is calculated within the function using the following sum:
 $$|n^{(1)}\\rangle  |n^{(0)}\\rangle + \\sum_{k \\in k_{list}} I_{kn} \ |k^{(0)}\\rangle $$
