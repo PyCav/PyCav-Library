@@ -3,25 +3,25 @@ Numerov Method
 
 In units where \\(\\hbar = 1 \\), the 1D TISE can be expressed in the form:
 
-$$ \frac{d^2 \psi}{dx^2} = -2m\left(E - V(x) \right) \psi = -g(x) \psi $$
+$$ \\frac{d^2 \\psi}{dx^2} = -2m\\left(E - V(x) \\right) \\psi = -g(x) \\psi $$
 
 
-This differential equation can be solved numerically via Numerov's method (<a href="http://www.fisica.uniud.it/~giannozz/Corsi/MQ/LectureNotes/mq-cap1.pdf">see page 10 - 11</a>). For a 1D spatial grid, the wavefunction at the $n+1$th point along can be approximated by:
+This differential equation can be solved numerically via Numerov's method ('see page 10 - 11 <http://www.fisica.uniud.it/~giannozz/Corsi/MQ/LectureNotes/mq-cap1.pdf>'_). For a 1D spatial grid, the wavefunction at the \\(n+1$th point along can be approximated by:
 
-$$ \psi_{n+1} = \frac{(12-10f_n) \ \psi_n-f_{n-1}\psi_{n-1}}{f_{n+1}} $$
+$$ \\psi_{n+1} = \\frac{(12-10f_n) \\ \\psi_n-f_{n-1}\\psi_{n-1}}{f_{n+1}} $$
 
 where:
-$$ f_n \equiv \left( 1 + \frac{\delta x^2}{12}g_n \right), \ \ \ \ \ \ \ g_n = 2m(E-V(x_n)) $$
+$$ f_n \\equiv \\left( 1 + \\frac{\\delta x^2}{12}g_n \\right), \ \ \ \ \ \ \ g_n = 2m(E-V(x_n)) $$
 
-Hence to start Numerov's method we require $$\psi_0$$ and $$\psi_1$$, in other words $$\psi(x = x_{min})$$ and $$\psi(x = x_{min} + \delta x)$$, where $$\delta x$$ is the step size.
+Hence to start Numerov's method we require \\(\\psi_0\\) and \\(\\psi_1\\), in other words \\(\\psi(x = x_{min})\\) and \\(\\psi(x = x_{min} + \\delta x)\\), where \\(\\delta x\\) is the step size.
 
-When investigating bound states we require $$\psi( x \to \pm \infty) = 0$$. However we cannot consider a infinite domain, instead we must choose a big enough domain that setting $$\psi( x = x_{min}) = 0$$ is a good approximation (and similarly for $$x_{max}$$).
+When investigating bound states we require \\(\\psi( x \\to \\pm \\infty) = 0\\). However we cannot consider a infinite domain, instead we must choose a big enough domain that setting \\(\\psi( x = x_{min}) = 0\\) is a good approximation (and similarly for \\(x_{max}\\)).
 
 With Numerov's Method in place, the shooting method can be used to find the energy eigenstates. It goes as follows:
 
-1. Setting $\psi_0 = 0$ "satisfies" the boundary condition that the wavefunctions must vanish at the boundary
-2. Since the Schrodinger Equation is linear and homogeneous we are free to set $$\psi_1$$ to any non-zero constant as multiplying by a constant does not affect the solution. In this case we shall set $$\psi_1 = \delta x$$.
-3. Using the Numerov algorithm, $$\psi(x)$$ can be found. Exponential growth near $$x_{max}$$ can be observed if the input energy is not near a energy eigenvalue
+1. Setting \\(\\psi_0 = 0\\) "satisfies" the boundary condition that the wavefunctions must vanish at the boundary
+2. Since the Schrodinger Equation is linear and homogeneous we are free to set \\(\\psi_1\\) to any non-zero constant as multiplying by a constant does not affect the solution. In this case we shall set \\(\\psi_1 = \\delta x\\).
+3. Using the Numerov algorithm, \\(\\psi(x)\\) can be found. Exponential growth near \\(x_{max}\\) can be observed if the input energy is not near a energy eigenvalue
 
 numerov(x,dx,V,E,initial_values,params)
 ^^^^^^^^^^^^^^^^^^^
