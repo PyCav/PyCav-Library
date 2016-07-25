@@ -51,7 +51,7 @@ first_order_energy_sft(n,H,unperturb_wf,params,limits = [-np.inf,np.inf])
    
    *unperturb_wf: function*
 
-   A function which is passed params and n and returns a function of position e.g.
+   A function which is passed params and n, returning a function of position e.g.
    
    .. code-block:: python
    
@@ -66,7 +66,7 @@ first_order_energy_sft(n,H,unperturb_wf,params,limits = [-np.inf,np.inf])
   
    *params: list*
    
-   List which can be used within your code to hold various physical parameter used by unperturb_wf and other functions (see later)
+   List which can be used within your code to hold various physical parameters used by unperturb_wf and other functions (see later)
   
    *limits: list*
   
@@ -104,4 +104,4 @@ first_order_wf(n,H,unperturb_wf,unperturb_erg,params,tolerance = 0.01, limits = 
 
    **Returns:**
 
-   A function of position which corresponds to the 1st order perturbed wavefunction and if return_list = True, copies of the principal quantum number lists and the sum prefactors list which were used to calculate the resultant perturbed wavefunction
+   A function of position which corresponds to the 1st order perturbed wavefunction and, if return_list = True, copies of the principal quantum number lists and the sum prefactors list which were used to calculate the resultant perturbed wavefunction
