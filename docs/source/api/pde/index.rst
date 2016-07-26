@@ -11,7 +11,7 @@ Introductory Documentation
 
 .. toctree::
    :maxdepth: 1
-   finite_difference
+   finitedifference
 
 In-depth Documentation
 -------

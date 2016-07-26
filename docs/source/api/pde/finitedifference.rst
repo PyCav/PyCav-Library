@@ -5,9 +5,11 @@ In these methods, partial derivatives in partial differential equations are appr
 
 $$ \\frac{d f}{d x} = \\lim_{\\Delta x \\to 0} \\frac{f(x+ \\Delta x)-f(x)}{\\Delta x} $$
 
-Hence if we take \\(\\Delta x\\) to be sufficiently small then the derivative will be well approximated by the following equivalent (in the limit of \\(\\Delta x \\to 0 \\))expressions:
+Hence if we take \\(\\Delta x\\) to be sufficiently small then the derivative will be well approximated by the following equivalent (in the limit of \\(\\Delta x \\to 0 \\)) expressions:
 
-$$ \\frac{d f}{d x} \\approx \\frac{f(x+ \\Delta x)-f(x)}{\\Delta x}, \\frac{f(x)-f(x- \\Delta x)}{\\Delta x}, \\frac{f(x+ \\Delta x)-f(x- \\Delta x)}{2 \\Delta x} $$
+$$ \\frac{d f}{d x} \\approx \\frac{f(x+ \\Delta x)-f(x)}{\\Delta x} $$
+$$ \\frac{d f}{d x} \\approx \\frac{f(x)-f(x- \\Delta x)}{\\Delta x} $$
+$$ \\frac{d f}{d x} \\approx \\frac{f(x+ \\Delta x)-f(x- \\Delta x)}{2 \\Delta x} $$
 
 If we now create a spatial gird, \\(x_i = x_0 + i \\Delta x \\), then labelling the function, \\(f\\), on these grid points as \\(f_i\\), then the finite differences as defined as:
 
@@ -43,4 +45,5 @@ These methods can be combined to evaulate mixed derivatives.
 
 For variable coefficients, e.g. \\(f(x) = d(x) \frac{d u}{d x} \\), we can find the first order derivative using half-step central differences \\( \\left( \\frac{d f}{d x} \\right)_i \\approx \\frac{f_{i+1/2}-f_{i-1/2}}{\\Delta x} \\):
 
-$$ \\left( \\frac{d f}{d x} \\right)_i \\approx \\frac{f_{i+1/2}-f_{i-1/2}}{\\Delta x} = \\frac{d_{i+1/2} \\left( \\frac{d u}{d x} \\right)_{i+1/2} - d_{i-1/2} \\left( \\frac{d u}{d x} \\right)_{i-1/2} }{\\Delta x} = \\frac{d_{i+1/2} u_{i+1} - (d_{i+1/2}+d_{i-1/2}) u_i + d_{i-1/2} u_{i-1}}{\\Delta x^2} $$
+$$ \\left( \\frac{d f}{d x} \\right)_i \\approx \\frac{f_{i+1/2}-f_{i-1/2}}{\\Delta x} = \\frac{d_{i+1/2} \\left( \\frac{d u}{d x} \\right)_{i+1/2} - d_{i-1/2} \\left( \\frac{d u}{d x} \\right)_{i-1/2} }{\\Delta x} $$
+$$ = \\frac{d_{i+1/2} u_{i+1} - (d_{i+1/2}+d_{i-1/2}) u_i + d_{i-1/2} u_{i-1}}{\\Delta x^2} $$
