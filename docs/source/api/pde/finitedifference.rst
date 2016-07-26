@@ -43,7 +43,7 @@ $$ \\left( \\frac{d^2 f}{d x^2} \\right)_i \\approx \\frac{f_{i+1} - 2 f_{i} + f
 
 These methods can be combined to evaulate mixed derivatives.
 
-For variable coefficients, e.g. \\(f(x) = d(x) \frac{d u}{d x} \\), we can find the first order derivative using half-step central differences \\( \\left( \\frac{d f}{d x} \\right)_i \\approx \\frac{f_{i+1/2}-f_{i-1/2}}{\\Delta x} \\):
+For variable coefficients, e.g. \\(f(x) = d(x) \\frac{d u}{d x} \\), we can find the first order derivative using half-step central differences \\( \\left( \\frac{d f}{d x} \\right)_i \\approx \\frac{f_{i+1/2}-f_{i-1/2}}{\\Delta x} \\):
 
 $$ \\left( \\frac{d f}{d x} \\right)_i \\approx \\frac{f_{i+1/2}-f_{i-1/2}}{\\Delta x} = \\frac{d_{i+1/2} \\left( \\frac{d u}{d x} \\right)_{i+1/2} - d_{i-1/2} \\left( \\frac{d u}{d x} \\right)_{i-1/2} }{\\Delta x} $$
 $$ = \\frac{d_{i+1/2} u_{i+1} - (d_{i+1/2}+d_{i-1/2}) u_i + d_{i-1/2} u_{i-1}}{\\Delta x^2} $$

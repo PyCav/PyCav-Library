@@ -11,6 +11,7 @@ Introductory Documentation
 
 .. toctree::
    :maxdepth: 1
+
    finitedifference
 
 In-depth Documentation
@@ -18,6 +19,7 @@ In-depth Documentation
 
 .. toctree::
    :maxdepth: 1
+   
    lax_wendroff
    crank_nicolson
    split_step
