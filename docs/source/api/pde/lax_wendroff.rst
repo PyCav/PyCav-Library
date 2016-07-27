@@ -1,37 +1,8 @@
-Partial Differential Equations
-====================================
+Wave Equation via Lax/Lax-Wendroff schemes
+===================
 
-Introduction to the Partial Differential Equation module
---------------------------
-
-This module contains functions for use in solving PDEs, namely the wave equation, the heat equation and the time dependent Schrödinger equation. These are solved using the Lax-Wendroff, Crank-Nicolson and Split Step Fourier methods respectively. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. A short introduction to finite difference methods will also be presented.
-
-Introductory Documentation
--------
-
-.. toctree::
-   :maxdepth: 1
-
-   finitedifference
-
-In-depth Documentation
--------
-
-.. toctree::
-   :maxdepth: 1
-   
-   lax_wendroff
-   crank_nicolson
-   split_step
-
-
-The list below summarises the functions, their input arguments and their outputs for quick reference for the informed user:
-
-Functions
----------
 
 LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init_grad = None, init_vel = None)
-^^^^^^^^^^^^^^^^^^^
 
    This function performs the two-step Lax-Wendroff scheme for 1D problems and a Lax method for 2D problems to solve a flux-conservative form of the wave equation for variable wave speed, c. 
 
@@ -123,9 +94,3 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
    **Returns:**
 
    A N x N_t numpy array, N x M x N_t in 2D, which contains the approximated wave at different times. A N_t element numpy array is also returned containing the time interval over which the simulation was run.
-
-CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0])
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
-^^^^^^^^^^^^^^^^^^^^^^^^^^
