@@ -2,11 +2,7 @@ import numpy as np
 from scipy.linalg import solve_banded
 from scipy.fftpack import fft,ifft,fft2,ifft2
 
-def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_grad = None, init_vel = None):
-
-	dt = a*dx/c
-
-	t = np.linspace(0.,(N-1)*dt,N)
+def LW_wave_equation(psi_0, x_list, dx, N, c, a = 1., bound_cond = 'periodic',init_grad = None, init_vel = None):
 
 	dim = len(psi_0.shape)
 	len_x = psi_0.shape[0]
@@ -20,10 +16,17 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 	if dim == 1:
 		psi = np.zeros((len_x,N))
 		psi[:,0] = psi_0
+		x = x_list
+		dt = a*dx/c(x).max()
+		alpha = a/c(x).max()
 
 	if dim == 2:
 		psi = np.zeros((len_x,len_y,N))
 		psi[:,:,0] = psi_0
+		y = x_list[1]
+		x = x_list[0]
+		dt = a*dx/c(x,y).max()
+		alpha = a/c(x,y).max()
 
 	if init_vel == None:
 		def _vel_0():
@@ -33,6 +36,8 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 		V = _vel_0()
 	else:
 		V = init_vel
+
+	t = np.linspace(0.,(N-1)*dt,N)
 
 	# If no gradient function is given then the gradient is estimated from the 
 	# initial wave array via finite difference
@@ -97,12 +102,17 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 	def _initialise(r,s,l = None):
 		if dim == 1:
 			s[:,0] = V(psi_0)
-			r[:,0] = D(psi_0)
+			r[:,0] = c(x)*D(psi_0)
 			return r,s
 		if dim == 2:
 			s[:,:,0] = V(psi_0)
-			r[:,:,0],l[:,:,0] = D(psi_0)
+			r[:,:,0],l[:,:,0] = c(x,y)*D(psi_0)
 			return r,s,l			
+
+	def L_step_2D(u,j_x,j_y):
+		u_step = (0.25*(u[2:,1:-1,0]+u[1:-1,2:,0]+u[:-2,1:-1,0]+u[1:-1,:-2,0])+0.5*alpha*(c(x[2:],y[1:-1])*j_x[2:,1:-1,0]-c(x[:-2],y[1:-1])*j_x[:-2,1:-1,0])
+			+0.5*alpha*(c(x[1:-1],y[2:])*j_y[1:-1,2:,0]-c(x[1:-1],y[:-2])*j_y[1:-1,:-2,0]))
+		return u_step
 
 	def _derivatives(psi):
 		if dim == 1:
@@ -119,20 +129,18 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 				if i == 0:
 					r,s = _initialise(r,s)
 
-				r_right = r[2:,0]
-				r_left  = r[:-2,0]
-				s_right = s[2:,0]
-				s_left  = s[:-2,0]
+				r_half = 0.5*(r[1:,0]+r[:-1,0])+0.5*alpha*(c(x[1:])*s[1:,0]-c(x[:-1])*s[:-1,0])
+				s_half = 0.5*(s[1:,0]+s[:-1,0])+0.5*alpha*(c(x[1:])*r[1:,0]-c(x[:-1])*r[:-1,0])
 
-				r[1:-1,1] = r[1:-1,0]+0.5*a*(s_right-s_left+a*(r_right+r_left-2*r[1:-1,0]))
-				s[1:-1,1] = s[1:-1,0]+0.5*a*(r_right-r_left+a*(s_right+s_left-2*s[1:-1,0]))
+				r[1:-1,1] = r[1:-1,0]+alpha*(c(x[1:-1]+dx/2.)*s_half[1:]-c(x[1:-1]-dx/2.)*s_half[:-1])
+				s[1:-1,1] = s[1:-1,0]+alpha*(c(x[1:-1]+dx/2.)*r_half[1:]-c(x[1:-1]-dx/2.)*r_half[:-1])
 
 				if bound_cond == 'reflective':
 					# At reflective boundaries the gradient is 0
 					r[0,:] = 0.0
 					r[-1,:] = 0.0
-					s[0,1] = s[0,0]+a*r[1,0]
-					s[-1,1] = s[-1,0]-a*r[-2,0]
+					s[0,1] = s[0,0]+alpha*c(x[1])*r[1,0]
+					s[-1,1] = s[-1,0]-alpha*c(x[-2])*r[-2,0]
 
 				if bound_cond == 'periodic':
 					r[0,:] = r[-2,:]
@@ -144,8 +152,8 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 					# At fixed boundaries the velocity is 0
 					s[0,:] = 0.0
 					s[-1,:] = 0.0
-					r[0,1] = r[0,0]+a*s[1,0]
-					r[-1,1] = r[-1,0]-a*s[-2,0]
+					r[0,1] = r[0,0]+alpha*c(x[1])*s[1,0]
+					r[-1,1] = r[-1,0]-alpha*c(x[-2])*s[-2,0]
 
 				psi[:,i+1] = psi[:,i]+0.5*dt*(s[:,1]+s[:,0])
 
@@ -156,23 +164,11 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 				if i == 0:
 					r,s,l = _initialise(r,s,l = l)
 
-				r_right = r[2:,:,0]
-				r_left  = r[:-2,:,0]
+				null_flux = np.zeros_like(s)
 
-				l_right = l[:,2:,0]
-				l_left  = l[:,:-2,0]
-
-				s_x_right = s[2:,:,0]
-				s_x_left  = s[:-2,:,0]
-
-				s_y_right = s[:,2:,0]
-				s_y_left  = s[:,:-2,0]
-
-				r[1:-1,:,1] = r[1:-1,:,0]+0.5*a*(s_x_right-s_x_left+a*(r_right+r_left-2*r[1:-1,:,0]))
-				l[:,1:-1,1] = l[:,1:-1,0]+0.5*a*(s_y_right-s_y_left+a*(l_right+l_left-2*l[:,1:-1,0]))
-
-				s[1:-1,1:-1,1] = s[1:-1,1:-1,0]+0.5*a*(r_right[:,1:-1]-r_left[:,1:-1]+l_right[1:-1,:]-l_left[1:-1,:]+
-								 a*(s_x_right[:,1:-1]+s_x_left[:,1:-1]+s_y_right[1:-1,:]+s_y_left[1:-1,:]-4*s[1:-1,1:-1,0]))
+				r[1:-1,1:-1,1] = L_step_2D(r,s,null_flux)
+				l[1:-1,1:-1,1] = L_step_2D(l,null_flux,s)
+				s[1:-1,1:-1,1] = L_step_2D(s,r,l)
 
 				if bound_cond == 'reflective':
 					# The gradient perpendicular to the boundaries are zero
@@ -183,18 +179,18 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 					l[:,-1,:] = 0.0
 
 					# x boundaries
-					s[0,1:-1,1] = s[0,1:-1,0]+a*r[1,1:-1,0]+0.5*a*(l_right[0,:]-l_left[0,:])
-					s[-1,1:-1,1] = s[-1,1:-1,0]-a*r[-2,1:-1,0]+0.5*a*(l_right[-1,:]-l_left[-1,:])
+					s[0,1:-1,1] = s[0,1:-1,0]+alpha*c(x[1],y[1:-1])[:,0]*r[1,1:-1,0]+0.5*alpha*(c(x[0],y[2:])[:,0]*l[0,2:,0]-c(x[0],y[:-2])[:,0]*l[0,:-2,0])
+					s[-1,1:-1,1] = s[-1,1:-1,0]-alpha*c(x[-2],y[1:-1])[:,0]*r[-2,1:-1,0]+0.5*alpha*(c(x[-1],y[2:])[:,0]*l[-1,2:,0]-c(x[-1],y[:-2])[:,0]*l[-1,:-2,0])
 
 					# y boundaries
-					s[1:-1,0,1] = s[1:-1,0,0]+a*l[1:-1,1,0]+0.5*a*(r_right[:,0]-r_left[:,0])
-					s[1:-1,-1,1] = s[1:-1,-1,0]-a*l[1:-1,-2,0]+0.5*a*(r_right[:,-1]-r_left[:,-1])
+					s[1:-1,0,1] = s[1:-1,0,0]+alpha*c(x[1:-1],y[1])[0]*l[1:-1,1,0]+0.5*alpha*(c(x[2:],y[0])[0]*r[2:,0,0]-c(x[:-2],y[0])[0]*r[:-2,0,0])
+					s[1:-1,-1,1] = s[1:-1,-1,0]-alpha*c(x[1:-1],y[-2])[0]*l[1:-1,-2,0]+0.5*alpha*(c(x[2:],y[-1])[0]*r[2:,-1,0]-c(x[:-2],y[-1])[0]*r[:-2,-1,0])
 
 					# corners
-					s[0,0,1] = s[0,0,1]+a*r[1,0,0]+a*l[0,1,0]
-					s[0,-1,1] = s[0,-1,1]+a*r[1,-1,0]-a*l[0,-2,0]
-					s[-1,0,1] = s[-1,0,1]-a*r[-2,0,0]+a*l[-1,1,0]
-					s[-1,-1,1] = s[-1,-1,1]-a*r[-2,-1,0]-a*l[-1,-2,0]
+					s[0,0,1] = s[0,0,0]+alpha*c(x[1],y[0])*r[1,0,0]+0.5*alpha*c(x[0],y[1])*l[0,1,0]
+					s[0,-1,1] = s[0,-1,0]+alpha*c(x[1],y[-1])*r[1,-1,0]-0.5*alpha*c(x[0],y[-2])*l[0,-2,0]
+					s[-1,0,1] = s[-1,0,0]-alpha*c(x[-2],y[0])*r[-2,0,0]+0.5*alpha*c(x[-1],y[1])*l[-1,1,0]
+					s[-1,-1,1] = s[-1,-1,0]-alpha*c(x[-2],y[-1])*r[-2,-1,0]-0.5*alpha*c(x[-1],y[-2])*l[-1,-2,0]
 
 				if bound_cond == 'periodic':
 					# Waves on the surface of a torus
@@ -224,11 +220,11 @@ def LW_wave_equation(psi_0, dx, N, a = 1., c = 1., bound_cond = 'periodic',init_
 					s[:,0,:] = 0.0
 					s[:,-1,:] = 0.0
 
-					r[0,:,1] = r[0,:,0]+a*s[1,:,0]
-					r[-1,:,1] = r[-1,:,0]-a*s[-2,:,0]
+					r[0,:,1] = r[0,:,0]+alpha*c(x[1],y)[:,0]*s[1,:,0]
+					r[-1,:,1] = r[-1,:,0]-alpha*c(x[-2],y)[:,0]*s[-2,:,0]
 
-					l[:,0,1] = l[:,0,0]+a*s[:,1,0]
-					l[:,-1,1] = l[:,-1,0]-a*s[:,-2,0]
+					l[:,0,1] = l[:,0,0]+alpha*c(x,y[1])[0]*s[:,1,0]
+					l[:,-1,1] = l[:,-1,0]-alpha*c(x,y[-2])[0]*s[:,-2,0]
 
 				psi[:,:,i+1] = psi[:,:,i]+0.5*dt*(s[:,:,1]+s[:,:,0])
 
