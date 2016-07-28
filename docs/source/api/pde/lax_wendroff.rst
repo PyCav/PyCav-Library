@@ -1,6 +1,15 @@
 Wave Equation via Lax/Lax-Wendroff schemes
 ===================
 
+The wave equations in 1D and 2D can be expressed as (for constant wave speed):
+
+$$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 \\frac{ \\partial^2 \\psi}{\\partial x^2} $$
+
+$$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 ( \\frac{ \\partial^2 \\psi}{\\partial x^2} + \\frac{ \\partial^2 \\psi}{\\partial y^2} )$$
+
+If we re-express the 1D wave equation in a flux-conservative form, \\(\\frac{\\partial u}{\\partial t} = -\\frac{\\partial F}{\\partial x} \\) (which allows for the use of established numerical methods) then we obtain:
+
+$$ u = \begin{array} r \\\ s \end{array}, r \equiv c \\frac{\\partial \\psi}{\\partial x}, s \equiv \\frac{\\partial \\psi}{\\partial t} $$
 
 LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init_grad = None, init_vel = None)
 
@@ -46,13 +55,18 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
    
    *bound_cond: string*
    
-   Can be equal to 'fixed','reflective' and 'periodic' to impose those boundary conditions. For fixed, the wave must go to zero at the boundary. For reflective, the gradient parallel to the surface normal must vanish at the boundary. For periodic, the boundaries on opposite sides are set to be equal.
+   Can be equal to 'fixed', 'reflective' and 'periodic' to impose those boundary conditions. For fixed, the wave must go to zero at the boundary. For reflective, the gradient parallel to the surface normal must vanish at the boundary. For periodic, the boundaries on opposite sides are set to be equal.
 
    *init_grad: function*
 
    A function which takes psi_0 as an argument and returns the gradient of the initial wave on the spatial grid. 1D example for a travelling Gaussian given below along with the init_vel example. For 2D, both \\(\\partial \\psi / \\partial x \\) and \\(\\partial \\psi / \\partial y \\) must be returned individually. For a 2D initially Gaussian wave:
 
+   $$ \\psi_0 = \\exp (- ((x - \\mu_x )^2+(y - \\mu_y )^2) / 2 \\sigma^2 ) \\to \\frac{ \\partial \\psi }{ \\partial x} = -(x- \\mu_x) \\psi_0 / \\sigma^2 $$
+
    .. code-block:: python
+
+     def twoD_gaussian(XX,YY,mean,std):
+      return np.exp(-((XX-mean[0])**2+(YY-mean[1])**2)/(2*std**2))
 
     def gradient_2d(x,y,mean,std):
       XX,YY = np.meshgrid(x,y, indexing='ij')
@@ -61,6 +75,8 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
          dfdy = -(YY-mean[1])*twoD_gaussian(XX,YY,mean,std)/std**2
          return dfdx,dfdy
       return gradient_2d
+
+   Here the init_grad argument would be set to gradient_2d(x,y,mean,std) so that the LW_wave_equation program recieves the function D. This removes the need for LW_wave_equation to know the values of mean and std. 
 
    If the default argument, None, is given then the initial gradient is estimated within the program using finite differencing. It is preferable to give the program a init_grad function when there exists an analytic form.
 
