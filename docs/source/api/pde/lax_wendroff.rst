@@ -9,7 +9,7 @@ $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 ( \\frac{ \\partial^2 \\psi}{
 
 If we re-express the 1D wave equation in a flux-conservative form, \\(\\frac{\\partial u}{\\partial t} = -\\frac{\\partial F}{\\partial x} \\) (which allows for the use of established numerical methods) then we obtain:
 
-$$ u = \\begin{bmatrix}r \\ s\\end{bmatrix}, r \\equiv c \\frac{\\partial \\psi}{\\partial x}, s \\equiv \\frac{\\partial \\psi}{\\partial t} $$
+$$ u = \\begin{bmatrix}r \\\\ s\\end{bmatrix}, r \\equiv c \\frac{\\partial \\psi}{\\partial x}, s \\equiv \\frac{\\partial \\psi}{\\partial t} $$
 
 LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init_grad = None, init_vel = None)
 
