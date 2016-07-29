@@ -1,5 +1,5 @@
-Mechanics module API Reference
-====================================
+Mechanics
+==========
 
 Introduction to the mechanics module
 --------------------------
