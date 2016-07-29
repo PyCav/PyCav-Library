@@ -9,15 +9,15 @@ from random import *
 vpython = None
 
 
-def no_force(pos, time):
+def no_force(particle, time):
     """
-    We can apply some time/position-dependent force to each particle.
+    We can apply some time/position/velocity-dependent force to each particle.
     This is the default function, where there is no force applied on the particle.
 
     Parameters
     ----------
-    pos : numpy array
-        Position at which the force is felt
+    particle : Particle
+        Particle which will feel the force
     time: float
         Time at which force is felt
     """
@@ -823,12 +823,12 @@ class System(object):
             for index, pointer in enumerate(self.pointerarrows):
                 pointer.pos = self.particles[index].pos + np.array([0., self.particles[index].radius + self.particles[index].radius, 0.])
                 # Add radius to itself as slightly faster performance that way than doing 2*
-                pointer.axis = self.particles[index].applied_force(self.particles[index].pos, self.time)
+                pointer.axis = self.particles[index].applied_force(self.particles[index], self.time)
 
         # Forces on particles depending on their applied force
         for particle in self.particles:
             if not particle.fixed:
-                particle.total_force = particle.applied_force(particle.pos, self.time)
+                particle.total_force = particle.applied_force(particle, self.time)
                 for spring in self.springs:
                     particle.total_force += spring.force_on(particle)
             else:
@@ -1031,7 +1031,7 @@ class System(object):
         for particle in self.particles:
             if not particle._pointer_assigned:
                 self.pointerarrows.append(PointerArrow(pos=particle.pos,
-                    axis=particle.applied_force(particle.pos, 0)))
+                    axis=particle.applied_force(particle, 0)))
                 particle._pointer_assigned = True
 
     def _collision_detection(self):
