@@ -52,7 +52,7 @@ A Gaussian wavepackets can be used to investigate the quantum mechanical evoluti
 
 For a initial wavepacket of the form:
 
-$$ \\psi (x, t = t_0) \\propto \\exp(- \\frac{(x-x_0)^2}{4 \\sigma_0^2 } + i k_0 x) $$
+$$ \\psi (x, t = t_0) \\propto \\exp \\left(- \\frac{(x-x_0)^2}{4 \\sigma_0^2 } + i k_0 x \\right) $$
 
 $$ \\sigma^2 (t) = \\sigma^2_0 + \\frac{1}{\\sigma^2_0} \\frac{t^2}{4 m^2} $$
 
@@ -64,23 +64,23 @@ Below is an example of setting up such a wavepacket:
 
 .. code-block:: python
 
-	def oneD_gaussian(x,mean,std,k0):
-    	return np.exp(-((x-mean)**2)/(4*std**2)+ 1j*x*k0)/np.sqrt(4*np.pi*std**2)
+ def oneD_gaussian(x,mean,std,k0):
+     return np.exp(-((x-mean)**2)/(4*std**2)+ 1j*x*k0)/np.sqrt(4*np.pi*std**2)
 
-    dt = 0.01
-	N_t = 2000
+ dt = 0.01
+ N_t = 2000
 
-	p0 = 2.0
-	d = np.sqrt(N_t*dt/2.)
+ p0 = 2.0
+ d = np.sqrt(N_t*dt/2.)
 
-	psi_0 = oneD_gaussian(x,x.max()-10*d,d,-p0)
+ psi_0 = oneD_gaussian(x,x.max()-10*d,d,-p0)
 
 Non-Linear Schrödinger
 ^^^^^^^^^^^^^^^^^^^^
 
 The non-linear Schrödinger equation includes a term which depends on the probability density of the wavefunction. This can be included by modifying our \\(\\mathcal{N}\\) operator:
 
-$$ \\mathcal{N} = -V(x) + \\kappa | \\psi(x,t) |^2 $$
+$$ \\mathcal{N} = -V(x) + \\kappa | \\psi (x,t) |^2 $$
 
 Depending on the sign, this corresponds to a repulsive or attractive contact potential between particles described by the wavefunction.
 
@@ -105,9 +105,11 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
 
    Gives the time step taken within the split-step algorithm. This needs to be small to reduce the size of numerical errors (try 0.01 as a safe starting value)
 
-   *V: function:
+   *V: function*
 
     Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
+
+    .. code-block:: python
 
 	 def V(x):
      	V_x = np.zeros_like(x)
@@ -117,6 +119,8 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
      	return V_x
 
     If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
+
+    .. code-block:: python
 
 	 def V(x,psi):
      	V_x = np.zeros_like(x)

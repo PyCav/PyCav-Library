@@ -147,6 +147,8 @@ CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0])
 split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
+
    This function performs the split-step Fourier method to solve the 1D time-dependent Schrödinger equation for a given potential
 
    **Parameters:**
@@ -163,9 +165,11 @@ split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_l
 
    Gives the time step taken within the split-step algorithm. This needs to be small to reduce the size of numerical errors (try 0.01 as a safe starting value)
 
-   *V: function:
+   *V: function*
 
     Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
+
+    .. code-block:: python
 
     def V(x):
       V_x = np.zeros_like(x)
@@ -175,6 +179,8 @@ split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_l
       return V_x
 
     If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
+
+    .. code-block:: python
 
     def V(x,psi):
       V_x = np.zeros_like(x)

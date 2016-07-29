@@ -27,15 +27,15 @@ $$ u^{n+1/2}_{j+1/2} = \\frac{1}{2} (u_{j+1}^n+u_j^n) - \\frac{\\Delta t}{2 \\De
 
 $$ u^{n+1}_{j} = u_j^n - \\frac{\\Delta t}{\\Delta x}(F^{n+1/2}_{j+1/2} - F^{n+1/2}_{j-1/2}) $$ 
 
-The stability of the scheme is parameterised by the Courant number, \\(\\alpha = c \\Delta t / \\Delta x \\), and the criteria for stability is that \\(\\alpha \leq 1 \\). This ensures \\(c \\Delta t \leq \\Delta x \\), hence information between spatial points can not have been communicated before the next time step is calculated.
+The stability of the scheme is parameterised by the Courant number, \\(\\alpha = c \\Delta t / \\Delta x \\), and the criteria for stability is that \\(\\alpha \\leq 1 \\). This ensures \\(c \\Delta t \\leq \\Delta x \\), hence information between spatial points can not have been communicated before the next time step is calculated.
 
 Boundary conditions can be set to be periodic, fixed or reflective. These are defined in our flux-conservative formulation as:
 
-Fixed (noting \\(s = \\frac{\\partial \\psi}{\\partial t} \\):
+Fixed (noting \\(s = \\frac{\\partial \\psi}{\\partial t} \\)):
 
 $$ s(x = x_{min}) = s(x = x_{max}) = 0 $$
 
-Reflective (noting \\(r = c \\frac{\\partial \\psi}{\\partial x} \\):
+Reflective (noting \\(r = c \\frac{\\partial \\psi}{\\partial x} \\)):
 
 $$ r(x = x_{min}) = r(x = x_{max}) = 0 $$
 
@@ -50,25 +50,48 @@ $$ F^n_{j+1} = - \\begin{bmatrix}c(x_{j+1}) s^n_{j+1} \\\\ c(x_{j+1}) r^n_{j+1} 
 2D Lax Scheme
 ^^^^^^^^^^^^^^^
 
-In 2D, the flux conservative form includes an additional term and variable:
+In 2D, the flux conservative form includes an additional flux:
+
+$$ \\frac{\\partial u}{\\partial t} = -\\frac{\\partial F_x}{\\partial x}-\\frac{\\partial F_y}{\\partial y} $$
+
+We define our new \\(u\\) vector as the following:
 
 $$ u = \\begin{bmatrix}r \\\\ l \\\\ s\\end{bmatrix}, r \\equiv c \\frac{\\partial \\psi}{\\partial x}, l \\equiv c \\frac{\\partial \\psi}{\\partial y}, s \\equiv \\frac{\\partial \\psi}{\\partial t} $$
 
-$$ \\frac{\\partial r}{\\partial t} = \\frac{\\partial c s}{\\partial x}$$
+$$ \\frac{\\partial r}{\\partial t} = \\frac{\\partial}{\\partial x} (c s)$$
 
-$$ \\frac{\\partial l}{\\partial t} = \\frac{\\partial c s}{\\partial y}$$
+$$ \\frac{\\partial l}{\\partial t} = \\frac{\\partial}{\\partial y} (c s)$$
 
-$$ \\frac{\\partial s}{\\partial t} = \\frac{\\partial c r}{\\partial x} + \\frac{\\partial c l}{\\partial y} $$
+$$ \\frac{\\partial s}{\\partial t} = \\frac{\\partial}{\\partial x}(c r) + \\frac{\\partial}{\\partial y} (c l)$$
+
+Hence the fluxes are given by:
+
+$$ F_x = \\begin{bmatrix}0 & 0 & -c \\\\ 0 & 0 & 0 \\\\ -c & 0 & 0\\end{bmatrix}\\cdot \\begin{bmatrix}r \\\\ l \\\\ s\\end{bmatrix} $$
+
+$$ F_y = \\begin{bmatrix}0 & 0 & 0 \\\\ 0 & 0 & -c \\\\ 0 & -c & 0\\end{bmatrix}\\cdot \\begin{bmatrix}r \\\\ l \\\\ s\\end{bmatrix} $$
+
+Plugging in the definitions of \\(r\\), \\(l\\) and \\(s\\) to the expression for \\(\\dot{s}\\), the 2D wave equation is recovered.
 
 Using a 2D Lax scheme, the components of \\(u\\) can be calculated by:
 
-$$ u^{n+1}_{j,l} = \\frac{1}{4} (u^n_{j+1,l} + u^n_{j-1,l} + u^n_{j,l+1} + u^n_{j,l-1}) - \\frac{\\Delta t}{\\Delta}(F^n_{x,j+1,l}-F^n_{x,j-1,l}+F^n_{y,j,l+1}-F^n_{y,j,l-1}) $$
+$$ u^{n+1}_{j,l} = \\frac{1}{4} (u^n_{j+1,l} + u^n_{j-1,l} + u^n_{j,l+1} + u^n_{j,l-1}) - \\frac{\\Delta t}{2 \\Delta}(F^n_{x,j+1,l}-F^n_{x,j-1,l}+F^n_{y,j,l+1}-F^n_{y,j,l-1}) $$
 
 Where \\(\\Delta = \\Delta x = \\Delta y \\). The fluxs labelled with \\(x,y\\) refer to terms within the \\(x,y\\) partial derivatives in the flux conservative expressions above. e.g. \\(F_x\\) for \\(r\\) is \\(c s\\) while \\(F_y\\) is zero.
 
 Boundaries conditions are dealt with in a similar way to the 1D case. But now \\(l\\) vanishes at \\(y_{min}\\) and \\(y_{max}\\) for reflective boundary conditions.
 
-For 2D cases, the Courant number must now be less than \\(1/ \\sqrt(2) \\). It should be noted that the definition of (\\c\\) in the Courant condition is replaced with the maximal wave speed when the wave speed is allowed to vary with position.
+For 2D cases, the Courant number must now be less than \\( 2^{-1/2} \\). It should be noted that the definition of \\(c\\) in the Courant condition is replaced with the maximal wave speed when the wave speed is allowed to vary with position.
+
+Form of the wave equation for spatially varying wave speed
+^^^^^^^^^^^^^^^^^^
+
+A important distinction should be made about the form of the wave equation. There are two possible forms of the wave equation for a variable wave speed, in 1D these are:
+
+$$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c(x)^2 \\frac{ \\partial^2 \\psi}{\\partial x^2} $$
+
+$$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = \\frac{ \\partial }{\\partial x} \\left( c(x)^2 \\frac{\\partial \\psi}{\\partial x} \\right) $$
+
+In the form we have cast the wave equation we are solving for the second of these equations. This describes systems such as surface waves on a fluid. The first equation follows from the electro-magnetic Maxwell equations in 1D.
 
 Argument list
 ^^^^^^^^^^^^
