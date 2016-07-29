@@ -1008,19 +1008,22 @@ class System(object):
 
     def _get_amplitudes(self):
         """
-        Gets the amplitudes for all the particles system. Only verified to work for 1D oscillations.
+        Gets the amplitudes for all the particles system. Only works for 1D oscillations.
         """
         for particle in self.particles:
             vel_diff = element_mult(particle.v, particle.prev_v)
-            if vel_diff[0] < 0. or vel_diff[1] < 0. or vel_diff[2] < 0.:
-                if not particle.max_point.any():
-                    if not particle.min_point.any():
-                        particle.max_point = _duplicate_vector(particle.pos)
-                        particle.min_point = _duplicate_vector(particle.pos)
+            index = None
+            for i, diff in enumerate(vel_diff):
+                if diff < 0.:
+                    index = i
+            if index is not None:
+                if not particle.max_point.any() and not particle.min_point.any():
+                    particle.max_point = _duplicate_vector(particle.pos)
+                    particle.min_point = _duplicate_vector(particle.pos)
                 else:
-                    if particle.pos[0] > particle.max_point[0]:
+                    if particle.pos[index] > particle.max_point[index]:
                         particle.max_point = _duplicate_vector(particle.pos)
-                    else:
+                    elif particle.pos[index] < particle.min_point[index]:
                         particle.min_point = _duplicate_vector(particle.pos)
             particle.prev_v = _duplicate_vector(particle.v)
 
