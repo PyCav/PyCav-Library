@@ -34,16 +34,16 @@ __init__(pos=None, v=None, radius=1., inv_mass=0., color=None, alpha=1.,   fixed
 
   *alpha: float*
 
-  Alpha of particle, 1 is completely opaque, 0 is completely transparent, used   in   visualisation
+  Alpha of particle, 1 is completely opaque, 0 is completely transparent, used in visualisation
 
 
   *fixed: boolean*
 
   Whether particle can move or not
 
-  *applied_force: function taking arguments of: pos(numpy array) and time(float),   that returns a numpy array*
+  *applied_force: function taking arguments of: particle(Particle) and time(float), that returns a numpy array*
 
-  Gives the applied force when the particle is at a certain location and time.   By default, no force applied on particle.
+  Gives the applied force based on the particle's properties and time. By default, no force applied on particle.
 
   *q: float*
 
