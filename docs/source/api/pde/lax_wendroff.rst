@@ -7,9 +7,71 @@ $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 \\frac{ \\partial^2 \\psi}{\\
 
 $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 ( \\frac{ \\partial^2 \\psi}{\\partial x^2} + \\frac{ \\partial^2 \\psi}{\\partial y^2} )$$
 
-If we re-express the 1D wave equation in a flux-conservative form, \\(\\frac{\\partial u}{\\partial t} = -\\frac{\\partial F}{\\partial x} \\) (which allows for the use of established numerical methods) then we obtain:
+A large class of inital value PDEs can be case into a flux-conservative form. In 1D:
+
+$$ \\frac{\\partial u}{\\partial t} = -\\frac{\\partial F}{\\partial x} $$
+
+If we re-express the 1D wave equation in a flux-conservative form (which allows for the use of established numerical methods) then we obtain:
 
 $$ u = \\begin{bmatrix}r \\\\ s\\end{bmatrix}, r \\equiv c \\frac{\\partial \\psi}{\\partial x}, s \\equiv \\frac{\\partial \\psi}{\\partial t} $$
+
+$$ F = \\begin{bmatrix}0 & -c \\\\ -c & 0\\end{bmatrix}\\cdot \\begin{bmatrix}r \\\\ s\\end{bmatrix} $$
+
+We now have a first order differential equation to solve of a given inital value problem.
+
+Unfortunately a simple finite difference method is unconditionally unstable. What a shame. 
+
+For the 1D wave equation we shall use the two-step Lax Wendroff scheme. This includes evaulating u at half steps, using this to find the half step fluxes and using a properly centered expression to perform the full time step. Using the notation introduced in the finite difference method documentation page:
+
+$$ u^{n+1/2}_{j+1/2} = \\frac{1}{2} (u_{j+1}^n+u_j^n) - \\frac{\\Delta t}{2 \\Delta x}(F^n_{j+1} - F^n_j) $$
+
+$$ u^{n+1}_{j} = u_j^n - \\frac{\\Delta t}{\\Delta x}(F^{n+1/2}_{j+1/2} - F^{n+1/2}_{j-1/2}) $$ 
+
+The stability of the scheme is parameterised by the Courant number, \\(\\alpha = c \\Delta t / \\Delta x \\), and the criteria for stability is that \\(\\alpha \leq 1 \\). This ensures \\(c \\Delta t \leq \\Delta x \\), hence information between spatial points can not have been communicated before the next time step is calculated.
+
+Boundary conditions can be set to be periodic, fixed or reflective. These are defined in our flux-conservative formulation as:
+
+Fixed (noting \\(s = \\frac{\\partial \\psi}{\\partial t} \\):
+
+$$ s(x = x_{min}) = s(x = x_{max}) = 0 $$
+
+Reflective (noting \\(r = c \\frac{\\partial \\psi}{\\partial x} \\):
+
+$$ r(x = x_{min}) = r(x = x_{max}) = 0 $$
+
+Periodic:
+
+$$ \\psi_N = \\psi_1, \\psi_0 = \\psi_{N-1} $$
+
+Now if we take the wave speed to be a function of position, \\( c(x) \\), then when the flux, \\(F\\), is evaulated at grid points then the wave speed at that point must be used e.g
+
+$$ F^n_{j+1} = - \\begin{bmatrix}c(x_{j+1}) s^n_{j+1} \\\\ c(x_{j+1}) r^n_{j+1} \\end{bmatrix} $$
+
+2D Lax Scheme
+^^^^^^^^^^^^^^^
+
+In 2D, the flux conservative form includes an additional term and variable:
+
+$$ u = \\begin{bmatrix}r \\\\ l \\\\ s\\end{bmatrix}, r \\equiv c \\frac{\\partial \\psi}{\\partial x}, l \\equiv c \\frac{\\partial \\psi}{\\partial y}, s \\equiv \\frac{\\partial \\psi}{\\partial t} $$
+
+$$ \\frac{\\partial r}{\\partial t} = \\frac{\\partial c s}{\\partial x}$$
+
+$$ \\frac{\\partial l}{\\partial t} = \\frac{\\partial c s}{\\partial y}$$
+
+$$ \\frac{\\partial s}{\\partial t} = \\frac{\\partial c r}{\\partial x} + \\frac{\\partial c l}{\\partial y} $$
+
+Using a 2D Lax scheme, the components of \\(u\\) can be calculated by:
+
+$$ u^{n+1}_{j,l} = \\frac{1}{4} (u^n_{j+1,l} + u^n_{j-1,l} + u^n_{j,l+1} + u^n_{j,l-1}) - \\frac{\\Delta t}{\\Delta}(F^n_{x,j+1,l}-F^n_{x,j-1,l}+F^n_{y,j,l+1}-F^n_{y,j,l-1}) $$
+
+Where \\(\\Delta = \\Delta x = \\Delta y \\). The fluxs labelled with \\(x,y\\) refer to terms within the \\(x,y\\) partial derivatives in the flux conservative expressions above. e.g. \\(F_x\\) for \\(r\\) is \\(c s\\) while \\(F_y\\) is zero.
+
+Boundaries conditions are dealt with in a similar way to the 1D case. But now \\(l\\) vanishes at \\(y_{min}\\) and \\(y_{max}\\) for reflective boundary conditions.
+
+For 2D cases, the Courant number must now be less than \\(1/ \\sqrt(2) \\). It should be noted that the definition of (\\c\\) in the Courant condition is replaced with the maximal wave speed when the wave speed is allowed to vary with position.
+
+Argument list
+^^^^^^^^^^^^
 
 LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init_grad = None, init_vel = None)
 
@@ -48,7 +110,17 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
    
     def c(x):
       return 0.5+0.5*x
+
+    In 2D, must take a pair of numpy arrays containing the x and y coords and return a numpy meshgrid of the wave speeds at those points e.g.
+
+   .. code-block:: python
    
+    def c(x,y):
+      XX,YY = np.meshgrid(x,y,indexing='ij')
+      return 0.5+0.5*YY
+   
+    This gives a wavespeed that's only a function of y
+
    *a: float*
    
    The Courant number, for stability of the code this must be \\(\\leq 1\\) (look up Courant-Friedrichs-Lewy stability criterion for information on this). For lower a, the code is more stable but the time step is reduced so more time steps (N) are required to simulate the same time length 

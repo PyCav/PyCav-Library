@@ -23,8 +23,10 @@ With Numerov's Method in place, the shooting method can be used to find the ener
 2. Since the Schrödinger Equation is linear and homogeneous we are free to set \\(\\psi_1\\) to any non-zero constant as multiplying by a constant does not affect the solution. In this case we set \\(\\psi_1 = \\delta x\\).
 3. Using the Numerov algorithm, \\(\\psi(x)\\) can be found. Exponential growth near \\(x_{max}\\) is observed if the input energy is not near a energy eigenvalue
 
+Argument list
+^^^^^^^^
+
 numerov(x,dx,V,E,initial_values,params)
-^^^^^^^^^^^^^^^^^^^
 
    This function performs a Numerov integration at the given energy within the given domain and returns the un-normalised wavefunction evaluates it over the whole domain.
 

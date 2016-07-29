@@ -11,8 +11,10 @@ The search should stop when \\(\\left| \ f(E)\\right| < \\epsilon\\) where \\(\\
 
 Dotted lines show the bracket solutions and the solid lines show the progression of the search to obtain the ground state of the potential.
 
+Argument list
+^^^^^^^^^^^
+
 bisection_search(x,dx,V,params,bracket_E,tolerance = 0.5,max_evals = 1000)
-^^^^^^^^^^^^^^^^^^^^^^^^^^
    
    Uses the Numerov method to perform a bisection search in energy for a wavefunction which goes to zero at the boundaries
 

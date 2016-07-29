@@ -31,7 +31,7 @@ Functions
 ---------
 
 LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init_grad = None, init_vel = None)
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
    This function performs the two-step Lax-Wendroff scheme for 1D problems and a Lax method for 2D problems to solve a flux-conservative form of the wave equation for variable wave speed, c. 
 
@@ -68,20 +68,35 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
    
     def c(x):
       return 0.5+0.5*x
+
+    In 2D, must take a pair of numpy arrays containing the x and y coords and return a numpy meshgrid of the wave speeds at those points e.g.
+
+   .. code-block:: python
    
+    def c(x,y):
+      XX,YY = np.meshgrid(x,y,indexing='ij')
+      return 0.5+0.5*YY
+   
+    This gives a wavespeed that's only a function of y
+
    *a: float*
    
    The Courant number, for stability of the code this must be \\(\\leq 1\\) (look up Courant-Friedrichs-Lewy stability criterion for information on this). For lower a, the code is more stable but the time step is reduced so more time steps (N) are required to simulate the same time length 
    
    *bound_cond: string*
    
-   Can be equal to 'fixed','reflective' and 'periodic' to impose those boundary conditions. For fixed, the wave must go to zero at the boundary. For reflective, the gradient parallel to the surface normal must vanish at the boundary. For periodic, the boundaries on opposite sides are set to be equal.
+   Can be equal to 'fixed', 'reflective' and 'periodic' to impose those boundary conditions. For fixed, the wave must go to zero at the boundary. For reflective, the gradient parallel to the surface normal must vanish at the boundary. For periodic, the boundaries on opposite sides are set to be equal.
 
    *init_grad: function*
 
    A function which takes psi_0 as an argument and returns the gradient of the initial wave on the spatial grid. 1D example for a travelling Gaussian given below along with the init_vel example. For 2D, both \\(\\partial \\psi / \\partial x \\) and \\(\\partial \\psi / \\partial y \\) must be returned individually. For a 2D initially Gaussian wave:
 
+   $$ \\psi_0 = \\exp (- ((x - \\mu_x )^2+(y - \\mu_y )^2) / 2 \\sigma^2 ) \\to \\frac{ \\partial \\psi }{ \\partial x} = -(x- \\mu_x) \\psi_0 / \\sigma^2 $$
+
    .. code-block:: python
+
+     def twoD_gaussian(XX,YY,mean,std):
+      return np.exp(-((XX-mean[0])**2+(YY-mean[1])**2)/(2*std**2))
 
     def gradient_2d(x,y,mean,std):
       XX,YY = np.meshgrid(x,y, indexing='ij')
@@ -90,6 +105,8 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
          dfdy = -(YY-mean[1])*twoD_gaussian(XX,YY,mean,std)/std**2
          return dfdx,dfdy
       return gradient_2d
+
+   Here the init_grad argument would be set to gradient_2d(x,y,mean,std) so that the LW_wave_equation program recieves the function D. This removes the need for LW_wave_equation to know the values of mean and std. 
 
    If the default argument, None, is given then the initial gradient is estimated within the program using finite differencing. It is preferable to give the program a init_grad function when there exists an analytic form.
 
@@ -129,3 +146,61 @@ CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0])
 
 split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   This function performs the split-step Fourier method to solve the 1D time-dependent Schrödinger equation for a given potential
+
+   **Parameters:**
+
+   *psi_0: numpy array*
+
+   In 1D, an N element numpy array containing the intial values of \\(\\psi\\) at the spatial grid points. In 2D, a NxM array is needed where N is the number of x grid points, M the number of y grid points. This array needs to be in "matrix indexing" rather than "Cartesian indexing" i.e. the first index (the rows) correspond to x values and the second index (the columns) correspond to y values. If using numpy.meshgrid, matrix indexing can be ensured by using the indexing='ij' keyword arg.
+
+   *dx: float*
+
+   Must give the spacing between points in the x array
+
+   *dt: float*
+
+   Gives the time step taken within the split-step algorithm. This needs to be small to reduce the size of numerical errors (try 0.01 as a safe starting value)
+
+   *V: function:
+
+    Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
+
+    def V(x):
+      V_x = np.zeros_like(x)
+      a = 0.5
+      x_mid = (x.max()+x.min())/2.
+      V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
+      return V_x
+
+    If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
+
+    def V(x,psi):
+      V_x = np.zeros_like(x)
+      V_x = -200.*np.absolute(psi)**2+0.05*x**2
+      return V_x
+
+   *N_t: integer*
+   
+   Number of time steps taken
+
+   *x_0: float*
+
+   Give the starting position of the spatial grid
+
+   *k_0: float*
+
+   Gives the starting position of the momentum space grid. If none is given then k_0 is set to \\(-\\pi/ \\Delta x \\) as it can be shown that this exactly satisfies the Nyquist limit.
+
+   *m: float*
+
+   The mass of the particle (default value of 1.0)
+
+   *non_linear: boolean*
+
+   Set to True if investigating the non-linear Schrödinger equation. Default is False
+   
+   **Returns:**
+
+   Two N x N_t numpy arrays which contain the approximated real space and momentum space wavefunctions at different times. A N element numpy array is also returned containing the k space interval used.

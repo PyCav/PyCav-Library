@@ -32,10 +32,11 @@ This is returned as a function of position i.e.
    perturb_wf_x = perturb_wf(x)
 
 Here perturb_wf_x is a numpy array containing the perturbed wavefunction evaluated at all the points in x
-   
+
+Argument list
+^^^^^^^^^^^^^^
 
 first_order_energy_sft(n,H,unperturb_wf,params,limits = [-np.inf,np.inf])
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    
    Works out the 1st order energy shift from time independent perturbation theory for a given unperturbed system and the applied perturbation
 
