@@ -41,9 +41,9 @@ no_force(pos, time)
 
    **Parameters:**
 
-   *pos: numpy array*
+   *particle: Particle*
 
-   A 3 element numpy array giving the position of the object feeling the force
+   Particle which will feel the force
 
    *time: float*
 
