@@ -1,11 +1,11 @@
-Time-Dependent Schrödinger equation via the Split-Step Fourier method:
+Time-Dependent Schrödinger equation via the Split-Step Fourier method
 ==============================
 
-Writing the Schrödinger equation in the form:
+Writing the Schrödinger equation in the form (in units where \\(\\hbar = 1 \\):
 $$ \\frac{ \\partial \\psi}{\\partial t} = i \\mathcal{L} \\psi+i \\mathcal{N} \\psi $$
 
 Where for the TDSE:
-$$ \\mathcal{L} = -\\frac{1}{2} \\frac{\\partial^2}{\\partial x^2},  \\mathcal{N} = -V(x) $$
+$$ \\mathcal{L} = \\frac{1}{2m} \\frac{\\partial^2}{\\partial x^2},  \\mathcal{N} = -V(x) $$
 
 The time evolution operator is then given by:
 
@@ -19,7 +19,7 @@ $$ \\psi (x,t_0 + \\Delta t / 2) = \\exp (i \\Delta t \\mathcal{N} /2) \\psi (x,
 
 Now neglecting \\(\\mathcal{N} \\), moving to momentum space \\(\\mathcal{L} \\) is simply multiplication. Hence in the full time interval \\(\\Delta t\\):
 
-$$  \\tilde{ \\psi } (k,t_0 + \\Delta t) = \\exp (i \\Delta t \\mathcal{F} ( \\mathcal{L})) \\tilde{ \\psi }(k,t_0) = \\exp (-i \\Delta t k^2) \\tilde{ \\psi }(k,t_0) $$
+$$  \\tilde{ \\psi } (k,t_0 + \\Delta t) = \\exp (i \\Delta t \\mathcal{F} ( \\mathcal{L})) \\tilde{ \\psi }(k,t_0) = \\exp (-i \\Delta t k^2 / 2 m) \\tilde{ \\psi }(k,t_0) $$
 
 For the initial \\( \\tilde{ \\psi }(k,t_0)\\) we use the Fourier transform of the time half step result we found first. Finally we must perform an additional spatial domain time half step to recover the split step approximation to time evolution operator for \\(\\mathcal{L} + \\mathcal{N}\\) by \\( \\Delta t\\).
 
@@ -29,7 +29,7 @@ $$ \\psi (x,t_0+ \\Delta t) = \\exp (i \\Delta t \\mathcal{N} /2) \\mathcal{F}^{
 
 We will be using Fast Fourier Transforms (FFTs) from the SciPy library so need to take into consideration the discrete nature of our input.
 
-The basic argument behind this is to match the continuous Fourier transform pair \\( \\psi(x,t) \\leftrightarrow \\tilde{ \\psi} (k,t)\\) to a discrete approximation, \\( \\psi(x_n,t) \\leftrightarrow \\tilde{ \\psi} (k_m,t)\\).
+The basic argument behind this is to match the continuous Fourier transform pair \\( \\psi(x,t) \\leftrightarrow \\tilde{ \\psi} (k,t)\\) to a discrete approximation, \\( \\psi(x_n,t) \\leftrightarrow \\tilde{ \\psi} (k_m,t)\\). Here we use n and m to index x and k:
 
 Starting with a continuous Fourier transform, we can form the discrete approximation:
 
@@ -80,7 +80,7 @@ Non-Linear Schrödinger
 
 The non-linear Schrödinger equation includes a term which depends on the probability density of the wavefunction. This can be included by modifying our \\(\\mathcal{N}\\) operator:
 
-$$ \\mathcal{N} = -V(x) + \\kappa | \\psi (x,t) |^2 $$
+$$ \\mathcal{N} = - V(x) + \\kappa \\left| \\psi (x,t) \\right| ^2 $$
 
 Depending on the sign, this corresponds to a repulsive or attractive contact potential between particles described by the wavefunction.
 
@@ -107,9 +107,9 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
 
    *V: function*
 
-    Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
+   Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
 
-    .. code-block:: python
+   .. code-block:: python
 
 	 def V(x):
      	V_x = np.zeros_like(x)
@@ -118,9 +118,9 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
      	V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
      	return V_x
 
-    If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
+   If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
 
-    .. code-block:: python
+   .. code-block:: python
 
 	 def V(x,psi):
      	V_x = np.zeros_like(x)

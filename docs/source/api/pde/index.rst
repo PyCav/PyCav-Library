@@ -69,7 +69,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
     def c(x):
       return 0.5+0.5*x
 
-    In 2D, must take a pair of numpy arrays containing the x and y coords and return a numpy meshgrid of the wave speeds at those points e.g.
+   In 2D, must take a pair of numpy arrays containing the x and y coords and return a numpy meshgrid of the wave speeds at those points e.g.
 
    .. code-block:: python
    
@@ -77,7 +77,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
       XX,YY = np.meshgrid(x,y,indexing='ij')
       return 0.5+0.5*YY
    
-    This gives a wavespeed that's only a function of y
+   This gives a wavespeed that's only a function of y
 
    *a: float*
    
@@ -91,7 +91,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
 
    A function which takes psi_0 as an argument and returns the gradient of the initial wave on the spatial grid. 1D example for a travelling Gaussian given below along with the init_vel example. For 2D, both \\(\\partial \\psi / \\partial x \\) and \\(\\partial \\psi / \\partial y \\) must be returned individually. For a 2D initially Gaussian wave:
 
-   $$ \\psi_0 = \\exp (- ((x - \\mu_x )^2+(y - \\mu_y )^2) / 2 \\sigma^2 ) \\to \\frac{ \\partial \\psi }{ \\partial x} = -(x- \\mu_x) \\psi_0 / \\sigma^2 $$
+   $$ \\psi_0 (x,y) = \\exp (- ((x - \\mu_x )^2+(y - \\mu_y )^2) / 2 \\sigma^2 ) \\to \\frac{ \\partial \\psi }{ \\partial x} = -(x- \\mu_x) \\psi_0 / \\sigma^2 $$
 
    .. code-block:: python
 
@@ -147,8 +147,6 @@ CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0])
 split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
-
    This function performs the split-step Fourier method to solve the 1D time-dependent Schrödinger equation for a given potential
 
    **Parameters:**
@@ -167,9 +165,9 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
 
    *V: function*
 
-    Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
+   Pass a function which takes a numpy array argument containing spatial coords and returns the potential at that point e.g.
 
-    .. code-block:: python
+   .. code-block:: python
 
     def V(x):
       V_x = np.zeros_like(x)
@@ -178,9 +176,9 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
       V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
       return V_x
 
-    If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
+   If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
 
-    .. code-block:: python
+   .. code-block:: python
 
     def V(x,psi):
       V_x = np.zeros_like(x)

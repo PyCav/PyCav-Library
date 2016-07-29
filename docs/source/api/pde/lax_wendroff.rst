@@ -5,7 +5,7 @@ The wave equations in 1D and 2D can be expressed as (for constant wave speed):
 
 $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 \\frac{ \\partial^2 \\psi}{\\partial x^2} $$
 
-$$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 ( \\frac{ \\partial^2 \\psi}{\\partial x^2} + \\frac{ \\partial^2 \\psi}{\\partial y^2} )$$
+$$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c^2 \\left( \\frac{ \\partial^2 \\psi}{\\partial x^2} + \\frac{ \\partial^2 \\psi}{\\partial y^2} \\right) $$
 
 A large class of inital value PDEs can be case into a flux-conservative form. In 1D:
 
@@ -134,7 +134,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
     def c(x):
       return 0.5+0.5*x
 
-    In 2D, must take a pair of numpy arrays containing the x and y coords and return a numpy meshgrid of the wave speeds at those points e.g.
+   In 2D, must take a pair of numpy arrays containing the x and y coords and return a numpy meshgrid of the wave speeds at those points e.g.
 
    .. code-block:: python
    
@@ -142,7 +142,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
       XX,YY = np.meshgrid(x,y,indexing='ij')
       return 0.5+0.5*YY
    
-    This gives a wavespeed that's only a function of y
+   This gives a wavespeed that's only a function of y
 
    *a: float*
    
@@ -156,7 +156,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
 
    A function which takes psi_0 as an argument and returns the gradient of the initial wave on the spatial grid. 1D example for a travelling Gaussian given below along with the init_vel example. For 2D, both \\(\\partial \\psi / \\partial x \\) and \\(\\partial \\psi / \\partial y \\) must be returned individually. For a 2D initially Gaussian wave:
 
-   $$ \\psi_0 = \\exp (- ((x - \\mu_x )^2+(y - \\mu_y )^2) / 2 \\sigma^2 ) \\to \\frac{ \\partial \\psi }{ \\partial x} = -(x- \\mu_x) \\psi_0 / \\sigma^2 $$
+   $$ \\psi_0 (x,y) = \\exp (- ((x - \\mu_x )^2+(y - \\mu_y )^2) / 2 \\sigma^2 ) \\to \\frac{ \\partial \\psi }{ \\partial x} = -(x- \\mu_x) \\psi_0 / \\sigma^2 $$
 
    .. code-block:: python
 
