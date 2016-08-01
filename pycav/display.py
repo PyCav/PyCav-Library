@@ -12,10 +12,13 @@ def anim_to_html(anim,temp,fname,overwrite):
     if temp:
         anim._html5_video = anim.to_html5_video()
     else:
+        _fps = int(anim.save_count/anim._interval)
+        if _fps == 0:
+            _fps = 20
         if not os.path.exists(fname):
-            anim.save(fname, fps=20, extra_args=['-vcodec', 'libx264'])
+            anim.save(fname, fps=_fps, extra_args=['-vcodec', 'libx264'])
         elif os.path.exists(fname) and overwrite:
-        	anim.save(fname, fps=20, extra_args=['-vcodec', 'libx264'])
+            anim.save(fname, fps=_fps, extra_args=['-vcodec', 'libx264'])
         video = open(fname, "rb").read()
 
         encoded_video = base64.b64encode(video).decode('utf-8')
