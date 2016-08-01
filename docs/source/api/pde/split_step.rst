@@ -79,7 +79,7 @@ As an example of its use, here is a gaussian wavepacket incident on a potential 
 
 .. raw:: html
 
- <video width="640" height="480" controls>
+ <video width="840" height="680" controls>
    <source src="https://raw.githubusercontent.com/PyCav/PyCav-Library/master/docs/source/api/pde/wobble.mp4" type="video/mp4">
  Your browser does not support the video tag.
  </video> 
@@ -121,21 +121,21 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
 
    .. code-block:: python
 
-	 def V(x):
-     	V_x = np.zeros_like(x)
-     	a = 0.5
-     	x_mid = (x.max()+x.min())/2.
-     	V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
-     	return V_x
+	def V(x):
+    	V_x = np.zeros_like(x)
+    	a = 0.5
+    	x_mid = (x.max()+x.min())/2.
+    	V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
+    	return V_x
 
    If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
 
    .. code-block:: python
 
-	 def V(x,psi):
-     	V_x = np.zeros_like(x)
-     	V_x = -200.*np.absolute(psi)**2+0.05*x**2
-     	return V_x
+	def V(x,psi):
+    	V_x = np.zeros_like(x)
+    	V_x = -200.*np.absolute(psi)**2+0.05*x**2
+    	return V_x
 
    *N_t: integer*
    

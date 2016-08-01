@@ -97,7 +97,7 @@ CN_diffusion_equation(T_0, D, x_list, dx, N_t, s = 0.25, wall_T = [0.0,0.0,0.0,0
 
    *s: float*
    
-   This is used to set the time step via \\(\\Delta t = s \\Delta x**2 \\). Although the scheme is stable for any size \\(\\Delta t \\) in order to ensure accurate results s should set sufficiently low. Generally of order \\(1/D_{max} \\) is advisable.
+   This is used to set the time step via \\(\\Delta t = s \\Delta x^2 \\). Although the scheme is stable for any size \\(\\Delta t \\) in order to ensure accurate results s should set sufficiently low. Generally of order \\(1/D_{max} \\) is advisable.
  
    *wall_T: list of floats*
 

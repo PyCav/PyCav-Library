@@ -111,7 +111,7 @@ $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = \\frac{ \\partial }{\\partial x} 
 
 In the form we have cast the wave equation we are solving for the second of these equations. This describes systems such as surface waves on a fluid. The first equation follows from the electro-magnetic Maxwell equations in 1D.
 
-* It should be noted when giving positional depedent wavespeeds with discontinuities, this will not give the familiar reflection and transmission results as the additional boundary conditions at the discontinuties are not included *
+*It should be noted when giving positional depedent wavespeeds with discontinuities, this will not give the familiar reflection and transmission results as the additional boundary conditions at the discontinuties are not included*
 
 Argument list
 ^^^^^^^^^^^^
