@@ -112,8 +112,6 @@ class Particle(object):
     Not tied to any visualisation method.
     """
 
-
-    
     # Getters and setters for certain properties so that visualization is only updated if it has changed.
 
     @property
@@ -147,11 +145,11 @@ class Particle(object):
     def make_trail(self, make_trail):
         self._make_trail = make_trail
         self._vis_values_changed = True
-    
+
 
     def __init__(self, pos=None, v=None, radius=1.,
         inv_mass=0., color=None, alpha=1., fixed=False, applied_force=no_force,
-        q = 0., make_trail = False):
+        q = 0., make_trail=False):
         """
         Parameters
         ----------
@@ -196,6 +194,7 @@ class Particle(object):
         self.fixed = fixed
         self.applied_force = applied_force
         self.total_force = np.array([0, 0, 0])
+        self.prev_force = None
         self.max_point = np.array([None])
         self.min_point = np.array([None])
         self._visualized = False  # Used in visualisation
@@ -214,8 +213,13 @@ class Particle(object):
         dt: float
             Time step to take
         """
-        self.v += (dt * self.total_force) * self.inv_mass
-        self.pos += (self.v * dt) + ((0.5 * self.total_force * self.inv_mass) * (dt**2))
+        if self.prev_force is not None:
+            self.v += 0.5 * (dt * (self.total_force + self.prev_force)) * self.inv_mass
+            self.pos += (self.v * dt) + ((0.5 * self.total_force * self.inv_mass) * (dt**2))
+        else:
+            self.v += (dt * (self.total_force)) * self.inv_mass
+            self.pos += (self.v * dt) + ((0.5 * self.total_force * self.inv_mass) * (dt**2))
+        self.prev_force = _duplicate_vector(self.total_force)
 
     def force_on(self, other, if_at=None):
         """
