@@ -47,6 +47,15 @@ Now if we take the wave speed to be a function of position, \\( c(x) \\), then w
 
 $$ F^n_{j+1} = - \\begin{bmatrix}c(x_{j+1}) s^n_{j+1} \\\\ c(x_{j+1}) r^n_{j+1} \\end{bmatrix} $$
 
+As an example of its use, here is a gaussian disturbance reflecting from a wall with fixed boundary conditions:
+
+.. raw:: html
+
+ <video width="640" height="480" controls>
+   <source src="https://raw.githubusercontent.com/PyCav/PyCav-Library/master/docs/source/api/pde/wibble.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+ </video> 
+
 2D Lax Scheme
 ^^^^^^^^^^^^^^^
 
@@ -82,6 +91,15 @@ Boundaries conditions are dealt with in a similar way to the 1D case. But now \\
 
 For 2D cases, the Courant number must now be less than \\( 2^{-1/2} \\). It should be noted that the definition of \\(c\\) in the Courant condition is replaced with the maximal wave speed when the wave speed is allowed to vary with position.
 
+As an example of its use, here is a gaussian disturbance within a container with periodic boundary conditions:
+
+.. raw:: html
+
+ <video width="640" height="480" controls>
+   <source src="https://raw.githubusercontent.com/PyCav/PyCav-Library/master/docs/source/api/pde/wibble2.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+ </video> 
+
 Form of the wave equation for spatially varying wave speed
 ^^^^^^^^^^^^^^^^^^
 
@@ -92,6 +110,8 @@ $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = c(x)^2 \\frac{ \\partial^2 \\psi}
 $$ \\frac{ \\partial^2 \\psi}{\\partial t^2} = \\frac{ \\partial }{\\partial x} \\left( c(x)^2 \\frac{\\partial \\psi}{\\partial x} \\right) $$
 
 In the form we have cast the wave equation we are solving for the second of these equations. This describes systems such as surface waves on a fluid. The first equation follows from the electro-magnetic Maxwell equations in 1D.
+
+* It should be noted when giving positional depedent wavespeeds with discontinuities, this will not give the familiar reflection and transmission results as the additional boundary conditions at the discontinuties are not included *
 
 Argument list
 ^^^^^^^^^^^^

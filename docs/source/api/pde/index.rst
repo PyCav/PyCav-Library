@@ -141,8 +141,64 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
 
    A N x N_t numpy array, N x M x N_t in 2D, which contains the approximated wave at different times. A N_t element numpy array is also returned containing the time interval over which the simulation was run.
 
-CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0])
+CN_diffusion_equation(T_0, D, x_list, dx, N_list, s = 0.25, wall_T = [0.0,0.0,0.0,0.0])
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   This function performs the Crank-Nicolson scheme for 1D and 2D problems to solve the inital value problem for the heat equation.
+
+   **Parameters:**
+
+   *T_0: numpy array*
+
+   In 1D, an N element numpy array containing the intial values of T at the spatial grid points. In 2D, a NxM array is needed where N is the number of x grid points, M the number of y grid points. This array needs to be in "matrix indexing" rather than "Cartesian indexing" i.e. the first index (the rows) correspond to x values and the second index (the columns) correspond to y values. If using numpy.meshgrid, matrix indexing can be ensured by using the indexing='ij' keyword arg.
+   
+   *D: function*
+   
+   In 1D, must take a numpy array argument containing spatial coords and return a numpy array of equal length giving the value of the diffusivity at the given positions e.g.
+
+   .. code-block:: python
+   
+    def D(x):
+      return 0.5+0.5*x
+
+   In 2D, must take a pair of floats of the x and y coords and return a float of the diffusivity at that point e.g.
+
+   .. code-block:: python
+   
+    def D(x,y):
+      return 0.5+0.5*(x-0.5)**2+0.5*(y-0.5)**2
+
+   *x_list: numpy array / list of numpy array*
+
+   In 1D, an N element numpy array of equally spaced points in space (creating using numpy linspace or arange is advised) at which the wave will be evaluated. In 2D, a list containing two numpy arrays of length N and M respectively. These correspond to the x and y spatial grids. e.g.
+
+   .. code-block:: python
+   
+    dx = 0.01
+    x = dx*np.arange(201)
+    y = dx*np.arange(101)
+    T,t = pde.CN_diffusion_equation(T_0, D, [x,y], dx, N_t)
+
+   *dx: float*
+
+   Must give the spacing between points in the x array (and y array for 2D)
+   
+   *N_t: integer*
+   
+   Number of time steps taken
+
+   *s: float*
+   
+   This is used to set the time step via \\(\\Delta t = s \\Delta x**2 \\). Although the scheme is stable for any size \\(\\Delta t \\) in order to ensure accurate results s should set sufficiently low. Generally of order \\(1/D_{max} \\) is advisable.
+ 
+   *wall_T: list of floats*
+
+   A list of 2 or 4 floats (for 1D or 2D) containing the fixed T values for the boundaries.
+
+   **Returns:**
+
+   A N x N_t numpy array, N x M x N_t in 2D, which contains the approximated T at different times. A N_t element numpy array is also returned containing the time interval over which the simulation was run.
+
 
 split_step_schrodinger(psi_0, dx, dt, V, N, x_0 = 0., k_0 = None, m = 1.0, non_linear = False)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

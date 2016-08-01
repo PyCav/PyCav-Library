@@ -75,6 +75,16 @@ Below is an example of setting up such a wavepacket:
 
  psi_0 = oneD_gaussian(x,x.max()-10*d,d,-p0)
 
+As an example of its use, here is a gaussian wavepacket incident on a potential barrier:
+
+.. raw:: html
+
+ <video width="640" height="480" controls>
+   <source src="https://raw.githubusercontent.com/PyCav/PyCav-Library/master/docs/source/api/pde/wobble.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+ </video> 
+
+
 Non-Linear Schrödinger
 ^^^^^^^^^^^^^^^^^^^^
 
