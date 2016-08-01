@@ -35,10 +35,10 @@ $$ Q(x,t) \\propto \\frac{1}{\\sqrt{2 \\pi (\\sigma_0^2 + 2Dt)}} \\exp \\left( -
 
 In the below video, the red outline shows the analytic solution and the black solid line shows the Crank-Nicolson result
 
-.. raw::html
+.. raw:: html
 
  <video width="320" height="240" controls>
-   <source src="kernel.mp4" type="video/mp4">
+   <source src="https://raw.githubusercontent.com/PyCav/PyCav-Library/master/docs/source/api/pde/kernel.mp4" type="video/mp4">
  Your browser does not support the video tag.
  </video> 
 
