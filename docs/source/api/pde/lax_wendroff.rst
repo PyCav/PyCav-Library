@@ -180,7 +180,7 @@ LW_wave_equation(psi_0, x_list, dx, N_t, c, a = 1., bound_cond = 'periodic',init
 
    .. code-block:: python
 
-     def twoD_gaussian(XX,YY,mean,std):
+    def twoD_gaussian(XX,YY,mean,std):
       return np.exp(-((XX-mean[0])**2+(YY-mean[1])**2)/(2*std**2))
 
     def gradient_2d(x,y,mean,std):

@@ -121,21 +121,21 @@ split_step_schrodinger(psi_0, dx, dt, V, N_t, x_0 = 0., k_0 = None, m = 1.0, non
 
    .. code-block:: python
 
-	def V(x):
-      V_x = np.zeros_like(x)
-      a = 0.5
-      x_mid = (x.max()+x.min())/2.
-      V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
-      return V_x
+	 def V(x):
+       V_x = np.zeros_like(x)
+       a = 0.5
+       x_mid = (x.max()+x.min())/2.
+       V_x = -a**2*(1/np.cosh(a*(x-x_mid)))**2
+       return V_x
 
    If non_linear = True then the potential function must now take an additional argument which is equal to the spatial wavefunction at the current time step e.g.
 
    .. code-block:: python
 
-	def V(x,psi):
-      V_x = np.zeros_like(x)
-      V_x = -200.*np.absolute(psi)**2+0.05*x**2
-      return V_x
+	 def V(x,psi):
+       V_x = np.zeros_like(x)
+       V_x = -200.*np.absolute(psi)**2+0.05*x**2
+       return V_x
 
    *N_t: integer*
    
