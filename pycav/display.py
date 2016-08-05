@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
 from IPython.display import HTML
-from tempfile import NamedTemporaryFile
 import base64
 import os
-
 
 VIDEO_TAG = """<video controls>
  <source src="data:video/x-m4v;base64,{0}" type="video/mp4">
@@ -12,26 +10,27 @@ VIDEO_TAG = """<video controls>
 
 def anim_to_html(anim,temp,fname,overwrite):
     if temp:
-        with NamedTemporaryFile(suffix='.mp4',delete = False) as f:
-            anim.save(f.name, fps=20, extra_args=['-vcodec', 'libx264'])
-            video = open(f.name, "rb").read()
-            os.unlink(f.name)
-            assert not os.path.exists(f.name)
+        anim._html5_video = anim.to_html5_video()
     else:
+        _fps = int(anim.save_count/anim._interval)
+        if _fps == 0:
+            _fps = 20
         if not os.path.exists(fname):
-            anim.save(fname, fps=20, extra_args=['-vcodec', 'libx264'])
+            anim.save(fname, fps=_fps, extra_args=['-vcodec', 'libx264'])
         elif os.path.exists(fname) and overwrite:
-        	anim.save(fname, fps=20, extra_args=['-vcodec', 'libx264'])
+            anim.save(fname, fps=_fps, extra_args=['-vcodec', 'libx264'])
         video = open(fname, "rb").read()
-    encoded_video = base64.b64encode(video).decode('utf-8')
-    
-    anim._encoded_video = encoded_video
+
+        encoded_video = base64.b64encode(video).decode('utf-8')
+        anim._encoded_video = encoded_video
 
     return anim
 
 def display_animation(fname):
     if hasattr(fname,'_encoded_video'):
     	return HTML(VIDEO_TAG.format(fname._encoded_video))
+    elif hasattr(fname,'_html5_video'):
+        return HTML(fname._html5_video)
     else:
         video = open(fname, "rb").read()
         encoded_video = base64.b64encode(video).decode('utf-8')
