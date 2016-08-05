@@ -11,10 +11,10 @@ The mechanics module provides the infrastructure to create simple systems consis
 	from pycav.mechanics import *
 	from vpython import *
 
-	container = Container(1)
-	system = System(collides = True, interacts = False, visualize = True, container = 	container)
+	container = Container(dimension=1)
+	system = System(collides=True, interacts=False, visualize=True, container=container)
 	avg_speed = 1
-	system.create_particles_in_container(number = 100, speed = avg_speed, radius = 0.03)
+	system.create_particles_in_container(number=100, speed=avg_speed, radius=0.03)
 	system.run_for(10)
 
 This creates a system consisting of a 100 particles which can collide with each other within a cubic container of unit size, which is then run for 10 seconds in the system's time.
