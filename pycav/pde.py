@@ -178,6 +178,12 @@ def LW_wave_equation(psi_0, x_list, dx, N, c, a = 1., bound_cond = 'periodic',in
 					l[:,0,:] = 0.0
 					l[:,-1,:] = 0.0
 
+					# Calculating the gradient along the edges
+					r[1:-1,0,1] = 0.25*(r[:-2,0,0]+r[2:,0,0]+2*r[1:-1,0,0])+0.5*alpha*(c(x[2:],y[0])[0]*s[2:,0,0]-c(x[:-2],y[0])[0]*s[:-2,0,0])
+					l[0,1:-1,1] = 0.25*(l[0,:-2,0]+l[0,2:,0]+2*l[0,1:-1,0])+0.5*alpha*(c(x[0],y[2:])[:,0]*s[0,2:,0]-c(x[0],y[:-2])[:,0]*s[0,:-2,0])
+					r[1:-1,-1,1] = 0.25*(r[:-2,-1,0]+r[2:,-1,0]+2*r[1:-1,-1,0])+0.5*alpha*(c(x[2:],y[-1])[0]*s[2:,-1,0]-c(x[:-2],y[-1])[0]*s[:-2,-1,0])
+					l[-1,1:-1,1] = 0.25*(l[-1,:-2,0]+l[-1,2:,0]+2*l[-1,1:-1,0])+0.5*alpha*(c(x[-1],y[2:])[:,0]*s[-1,2:,0]-c(x[-1],y[:-2])[:,0]*s[-1,:-2,0])
+
 					# x boundaries
 					s[0,1:-1,1] = s[0,1:-1,0]+alpha*c(x[1],y[1:-1])[:,0]*r[1,1:-1,0]+0.5*alpha*(c(x[0],y[2:])[:,0]*l[0,2:,0]-c(x[0],y[:-2])[:,0]*l[0,:-2,0])
 					s[-1,1:-1,1] = s[-1,1:-1,0]-alpha*c(x[-2],y[1:-1])[:,0]*r[-2,1:-1,0]+0.5*alpha*(c(x[-1],y[2:])[:,0]*l[-1,2:,0]-c(x[-1],y[:-2])[:,0]*l[-1,:-2,0])
@@ -187,10 +193,10 @@ def LW_wave_equation(psi_0, x_list, dx, N, c, a = 1., bound_cond = 'periodic',in
 					s[1:-1,-1,1] = s[1:-1,-1,0]-alpha*c(x[1:-1],y[-2])[0]*l[1:-1,-2,0]+0.5*alpha*(c(x[2:],y[-1])[0]*r[2:,-1,0]-c(x[:-2],y[-1])[0]*r[:-2,-1,0])
 
 					# corners
-					s[0,0,1] = s[0,0,0]+alpha*c(x[1],y[0])*r[1,0,0]+0.5*alpha*c(x[0],y[1])*l[0,1,0]
-					s[0,-1,1] = s[0,-1,0]+alpha*c(x[1],y[-1])*r[1,-1,0]-0.5*alpha*c(x[0],y[-2])*l[0,-2,0]
-					s[-1,0,1] = s[-1,0,0]-alpha*c(x[-2],y[0])*r[-2,0,0]+0.5*alpha*c(x[-1],y[1])*l[-1,1,0]
-					s[-1,-1,1] = s[-1,-1,0]-alpha*c(x[-2],y[-1])*r[-2,-1,0]-0.5*alpha*c(x[-1],y[-2])*l[-1,-2,0]
+					s[0,0,1] = s[0,0,0]+0.5*alpha*(4*c(x[1],y[0])[0]*r[1,0,0]-c(x[2],y[0])[0]*r[2,0,0])+0.5*alpha*(4*c(x[0],y[1])[0]*l[0,1,0]-c(x[0],y[2])[0]*l[0,2,0])
+					s[0,-1,1] = s[0,-1,0]+0.5*alpha*(4*c(x[1],y[-1])[0]*r[1,-1,0]-c(x[2],y[-1])[0]*r[2,-1,0])-0.5*alpha*(4*c(x[0],y[-2])[0]*l[0,-2,0]-c(x[0],y[-3])[0]*l[0,-3,0])
+					s[-1,0,1] = s[-1,0,0]-0.5*alpha*(4*c(x[-2],y[0])[0]*r[-2,0,0]-c(x[-3],y[0])[0]*r[-3,0,0])+0.5*alpha*(4*c(x[-1],y[1])[0]*l[-1,1,0]-c(x[-1],y[2])[0]*l[-1,2,0])
+					s[-1,-1,1] = s[-1,-1,0]-0.5*alpha*(4*c(x[-2],y[-1])[0]*r[-2,-1,0]-c(x[-3],y[-1])[0]*r[-3,-1,0])-0.5*alpha*(4*c(x[-1],y[-2])[0]*l[-1,-2,0]-c(x[-1],y[-3])[0]*l[-1,-3,0])
 
 				if bound_cond == 'periodic':
 					# Waves on the surface of a torus
@@ -242,7 +248,7 @@ def LW_wave_equation(psi_0, x_list, dx, N, c, a = 1., bound_cond = 'periodic',in
 
 	return psi, t
 
-def CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0]):
+def CN_diffusion_equation(T_0, D, x_list, dx, N, s = 0.25, wall_T = [0.0,0.0,0.0,0.0]):
 
 	dim = len(T_0.shape)
 	len_x = T_0.shape[0]
@@ -255,10 +261,11 @@ def CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0]):
 
 	if dim == 1:
 		dt = s*dx**2
+		x = x_list
 
 	elif dim == 2:
-		y = x[1]
-		x = x[0]
+		y = x_list[1]
+		x = x_list[0]
 		dt = s*dx**2
 
 	t = np.linspace(0.,(N-1)*dt,N)
@@ -285,9 +292,9 @@ def CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0]):
 										 +D(x[n],y[m]+dx/2.)*(T[n,m+1,j]-T[n,m,j])-D(x[n],y[m]-dx/2.)*(T[n,m,j]-T[n,m-1,j])))
 
 			T[0,:,:] = wall_T[0]
-			T[-1,:,:] = wall_T[0]
-			T[:,0,:] = wall_T[1]
-			T[:,-1,:] = wall_T[1]
+			T[-1,:,:] = wall_T[1]
+			T[:,0,:] = wall_T[2]
+			T[:,-1,:] = wall_T[3]
 
 	def _central_diff(q,j,coord = None):
 		if dim == 1:
@@ -334,8 +341,8 @@ def CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0]):
 				C[0] = s*D(dx/2.,q[1])*wall_T[0]
 				C[-1] = s*D(q[0][-1]-dx/2.,q[1])*wall_T[1]				
 			if coord == 'y':
-				C[0] = s*D(q[1],dx/2.)*wall_T[0]
-				C[-1] = s*D(q[1],q[0][-1]-dx/2.)*wall_T[1]	
+				C[0] = s*D(q[1],dx/2.)*wall_T[2]
+				C[-1] = s*D(q[1],q[0][-1]-dx/2.)*wall_T[3]	
 
 		return A,B,C
 
@@ -372,9 +379,9 @@ def CN_diffusion_equation(T_0, D, x, dx, N, s = 0.25, wall_T = [0.0,0.0]):
 				T[1:-1,l,j+1] = solve_banded((1,1),_diagonal_form(A_x,q),np.dot(B_x,T_intermediate[1:-1,l])+C_x)
 
 			T_intermediate[0,:] = wall_T[0]
-			T_intermediate[-1,:] = wall_T[0]
-			T_intermediate[:,0] = wall_T[1]
-			T_intermediate[:,-1] = wall_T[1]
+			T_intermediate[-1,:] = wall_T[1]
+			T_intermediate[:,0] = wall_T[2]
+			T_intermediate[:,-1] = wall_T[3]
 
 	def _main_step():
 		_explicit_step(0)
