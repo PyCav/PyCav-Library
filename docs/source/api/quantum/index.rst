@@ -4,7 +4,7 @@ Quantum
 Introduction to the Quantum module
 --------------------------
 
-This module contains functions for the use in 1st order perturbation theory calculations and solving 1d boundary value problems using the Shooting method. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. 
+This module contains functions for use in 1st order perturbation theory calculations and for solving 1d boundary value problems using the Shooting method. It also contains a class designed to represent systems of interacting spins. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. 
 
 In-depth Documentation
 -------
@@ -15,6 +15,7 @@ In-depth Documentation
    numerov
    bisection
    perturbation
+   spinsystem
    plotting
 
 The list below summarises the functions, their input arguments and their outputs for quick reference for the informed user:
@@ -153,3 +154,35 @@ first_order_wf(n,H,unperturb_wf,unperturb_erg,params,tolerance = 0.01, limits = 
    **Returns:**
 
    A function of position which corresponds to the 1st order perturbed wavefunction and if return_list = True, copies of the principal quantum number lists and the sum prefactors list which were used to calculate the resultant perturbed wavefunction
+
+create_Su(s)
+^^^^^^^^^^^
+   Returns the 'up' angular momentum ladder operator in the z basis.
+
+   **Parameters:**
+
+   *s: int or float*
+
+   The angular momentum quantum number, 1/2 for isolated electrons, 1 for a hydrogenic p-orbital etc. If s is a float, it must be a half-integer.
+
+   **Returns:**
+
+   *numpy array with complex elements, 
+
+create_Sd(s)
+^^^^^^^^^^^
+   Returns the 'down' angular momentum ladder operator in the z basis. Usage is identical to create_Su.
+
+create_Sx(s)
+^^^^^^^^^^^
+   Returns the 'x' angular momentum operator in the z basis. Usage is identical to create_Su.
+
+create_Sy(s)
+^^^^^^^^^^^
+   Returns the 'y' angular momentum operator in the z basis. Usage is identical to create_Su.
+
+create_Sz(s)
+^^^^^^^^^^^
+   Returns the 'z' angular momentum operator in the z basis. Usage is identical to create_Su.
+
+
