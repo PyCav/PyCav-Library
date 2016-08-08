@@ -167,7 +167,7 @@ create_Su(s)
 
    **Returns:**
 
-   *numpy array with complex elements, 
+   *numpy array with complex elements* 
 
 create_Sd(s)
 ^^^^^^^^^^^
