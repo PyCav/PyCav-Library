@@ -16,7 +16,13 @@ PyCav offers a rich set of tools so that you can make and visualize effective Ph
 
   * Simulate forces from a field
 
-* A quantum module
+* A quantum module for time independent 1D quantum systems
+
+* A PDE module for 1D and 2D systems
+
+* An optics module for performing refraction in the geometic optics limit
+
+* A display module for displaying matplotlib animations within Jupyter notebooks
 
 * Optional visualization using vpython
 
