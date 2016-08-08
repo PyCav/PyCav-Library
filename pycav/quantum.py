@@ -1,8 +1,216 @@
 import numpy as np
 from scipy.integrate import quad
 from copy import copy
-
 import matplotlib.pyplot as plt
+
+h_bar = 1.0
+
+def create_Su(s):
+    """
+    Return the 'up' angular momentum operator
+
+    Parameters
+    ----------
+    s : float or int
+        Angular momentum quantum number (half-integer or integer)
+    """
+
+    dim = int(2*s+1)
+    Su = np.zeros((dim,dim), dtype = np.complex128)
+    for i in range(dim-1):
+        m = s-1-i
+        Su[i,i+1] = h_bar*np.sqrt(s*(s+1)-m*(m+1))
+    return Su
+
+
+
+def create_Sd(s):
+    """
+    Return the 'down' angular momentum operator
+
+    Parameters
+    ----------
+    s : float or int
+        Angular momentum quantum number (half-integer or integer)
+    """
+
+    dim = int(2*s+1)
+    Sd = np.zeros((dim,dim), dtype = np.complex128)
+    for i in range(1,dim):
+        #magnetic quantum number
+        m = s+1-i
+        Sd[i,i-1] = h_bar*np.sqrt(s*(s+1)-m*(m-1))
+    return Sd
+
+
+
+def create_Sx(s):
+    """
+    Return the x angular momentum operator in the z basis
+
+    Parameters
+    ----------
+    s : float or int
+        Angular momentum quantum number (half-integer or integer)
+    """
+
+    return 0.5*(create_Su(s)+create_Sd(s))
+
+
+
+def create_Sy(s):
+    """
+    Return the y angular momentum operator in the z basis
+
+    Parameters
+    ----------
+    s : float or int
+        Angular momentum quantum number (half-integer or integer)
+    """
+
+    return -0.5j*(create_Su(s)-create_Sd(s))
+
+
+
+def create_Sz(s):
+    """
+    Return the z angular momentum operator in the z basis
+
+    Parameters
+    ----------
+    s : float or int
+        Angular momentum quantum number (half-integer or integer)
+    """
+
+    dim = int(2*s+1)
+    Sz = np.zeros((dim,dim), dtype = np.complex128)
+    for i in range(dim):
+        Sz[i,i] = h_bar*(s-i)
+    return Sz
+
+
+
+class SpinSystem:
+    """
+    class representing a system of interacting spins in an inhomogeneous
+    magnetic field. Interactions between spins are included in the 
+    Hamiltonian as Kronecker products of the one-particle operators.
+    """
+
+    def __init__(self, spins, couplings, B_field = None):
+        """
+        Parameters
+        ----------
+        spins: list
+            Spin quantum numbers of the particles (integer or half-integer)
+        couplings: list
+            NxN list for a system of N spins. The element J[i,j] gives the
+            coupling strength between spins i and j.
+        B_field: list, optional
+            List of 3-dimensional vectors representing the magnetic flux 
+            density at each spin. 
+        """
+
+        self.N = len(spins)
+        self.Sx = [create_Sx(s) for s in spins]
+        self.Sy = [create_Sy(s) for s in spins]
+        self.Sz = [create_Sz(s) for s in spins] 
+        self.I = [np.identity(int(2*s+1), dtype = np.complex128) for s in spins]
+        
+        #interactions
+        self.J = np.array(couplings, dtype = np.complex128)
+        if B_field is not None:
+            self.B = np.array(B_field, dtype = np.complex128)
+        else:
+            self.B = None
+        
+        #Hamiltonian
+        self.H_size = 1
+        for s in spins:
+            self.H_size *= int(2*s+1)
+        self.create_hamiltonian()
+
+    def create_hamiltonian(self):
+        """
+        Create a Hamiltonian with spin-pairing. A linear coupling between
+        spins and the magnetic field is included if a B_field was used to
+        initialise the SpinSystem.
+        The Hamiltonian acts on Kronecker products of the spins' states.
+        """
+        self.H = np.zeros((self.H_size, self.H_size), dtype = np.complex128)
+        for i in range(self.N):
+            #count from i+1 to N to avoid self-interaction and double counting
+            for j in range(i+1, self.N):
+                #create term of the form
+                #I x S x I x I x S ...
+                if i==0:
+                    term_x = copy(self.Sx[0])
+                    term_y = copy(self.Sy[0])
+                    term_z = copy(self.Sz[0])
+                else:
+                    term_x = copy(self.I[0])
+                    term_y = copy(self.I[0])
+                    term_z = copy(self.I[0])
+                for k in range(1, self.N):
+                    if k == i or k == j:
+                        term_x = np.kron(term_x, self.Sx[k])
+                        term_y = np.kron(term_y, self.Sy[k])
+                        term_z = np.kron(term_z, self.Sz[k])
+                    else:
+                        term_x = np.kron(term_x, self.I[k])
+                        term_y = np.kron(term_y, self.I[k])
+                        term_z = np.kron(term_z, self.I[k])
+                #add this term to the Hamiltonian
+                self.H += self.J[i,j]*(term_x + term_y + term_z)
+        #Include linear coupling to the magnetic field.
+        if self.B is not None:
+            for i in range(self.N):
+                if i == 0:
+                    B_term = self.B[0,0]*self.Sx[0]+self.B[0,1]*self.Sy[0]+self.B[0,2]*self.Sz[0]
+                else:
+                    B_term = self.I[0]
+                for k in range(1, self.N):
+                    if k == i:
+                        B_term = np.kron(B_term, self.B[k,0]*self.Sx[k]+self.B[k,1]*self.Sy[k]+self.B[k,2]*self.Sz[k])
+                    else:
+                        B_term = np.kron(B_term, self.I[k])
+                self.H -= B_term
+
+    def get_energies(self):
+        """
+        Calculate the energy levels and eigenstates of the Hamiltonian
+        """
+        self.energies, self.states = np.linalg.eigh(self.H)
+
+    def count_multiplicities(self):
+        """
+        Create lists of multiplicities and unrepeated energy levels.
+        """
+        if hasattr(self, 'energies'):
+            self.multiplicities = []
+            #levels without degeneracy
+            self.reduced_energies = []
+
+            val = self.energies[0]
+            count = 0
+            #find the multiplicities
+            for i in range(self.energies.shape[0]):
+                if abs(self.energies[i] - val) < 0.0001:
+                    count += 1
+                else:
+                    self.multiplicities.append(count)
+                    self.reduced_energies.append(self.energies[i-1])
+                    count = 1
+                    val = self.energies[i]
+            self.multiplicities.append(count)
+            self.reduced_energies.append(self.energies[i])
+        #create the class attributes that
+        #count_multiplicities depends upon
+        else:
+            self.get_energies()
+            self.count_multiplicities()
+
+
 
 def numerov(x,dx,V,E,initial_values,params):
     steps = x.shape[0]-1
