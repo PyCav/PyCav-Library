@@ -33,6 +33,7 @@ __init__(spins, couplings, B_field = None)
 
 create_Hamiltonian()
 ^^^^^^^^^^^^^^^^^^^^
+
 	Create a Hamiltonian with spin-pairing given by the coupling array. 
 	A linear coupling between spins and the magnetic field is included if 
 	a B_field was used to initialise the SpinSystem.
@@ -43,12 +44,14 @@ create_Hamiltonian()
 
 get_energies()
 ^^^^^^^^^^^^^^
+
 	Calculates the energy levels and eigenstates of the Hamiltonian using
 	numpy.linalg.eigh. They are then stored as attributes *energies* and 
 	*states* in order of increasing energy, both are numpy arrays.
 
 count_multiplicities(tolerance = 0.0001)
 ^^^^^^^^^^^^^^^^^^^^^^
+
 	Counts the multiplicities of the energy eigenvalues, generating a list
 	of multiplicities and list of non-repeated energies. These lists are 
 	subsequently stored as attributes *multiplicities* and *reduced_energies*.
@@ -102,11 +105,13 @@ Attributes
 
     Energy eigenvalues of the system, repeated according to degeneracy and
     stored in order of increasing energy.
+
     *Created by get_energies() and count_multiplicities()*
 
     *states: numpy array*
 
     Energy eigenstates, stored in order of increasing energy.
+    
     *Created by get_energies() and count_multiplicities()*
 
     *multiplicities: list*
@@ -114,7 +119,7 @@ Attributes
     List of the multiplicities of the energy eigenstates in order of
     increasing energy.
 
-    *reduced_eneries: list*
+    *reduced_energies: list*
 
     List of the non-repeated energy levels. e.g. an 8-fold degenerate state
     will feature only once in this list.
