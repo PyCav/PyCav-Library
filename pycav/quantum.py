@@ -105,13 +105,17 @@ class SpinSystem:
             Spin quantum numbers of the particles (integer or half-integer)
         couplings: list
             NxN list for a system of N spins. The element J[i,j] gives the
-            coupling strength between spins i and j.
+            coupling strength between spins i and j. Positive coupling favours
+            spin alignment.
         B_field: list, optional
             List of 3-dimensional vectors representing the magnetic flux 
             density at each spin. 
         """
+        try:
+            self.N = spins.shape[0]
+        except AttributeError:
+            self.N = len(spins)
 
-        self.N = len(spins)
         self.Sx = [create_Sx(s) for s in spins]
         self.Sy = [create_Sy(s) for s in spins]
         self.Sz = [create_Sz(s) for s in spins] 
@@ -161,7 +165,7 @@ class SpinSystem:
                         term_y = np.kron(term_y, self.I[k])
                         term_z = np.kron(term_z, self.I[k])
                 #add this term to the Hamiltonian
-                self.H += self.J[i,j]*(term_x + term_y + term_z)
+                self.H -= self.J[i,j]*(term_x + term_y + term_z)
         #Include linear coupling to the magnetic field.
         if self.B is not None:
             for i in range(self.N):
@@ -182,7 +186,7 @@ class SpinSystem:
         """
         self.energies, self.states = np.linalg.eigh(self.H)
 
-    def count_multiplicities(self):
+    def count_multiplicities(self, tolerance = 0.0001):
         """
         Create lists of multiplicities and unrepeated energy levels.
         """
@@ -195,7 +199,7 @@ class SpinSystem:
             count = 0
             #find the multiplicities
             for i in range(self.energies.shape[0]):
-                if abs(self.energies[i] - val) < 0.0001:
+                if abs(self.energies[i] - val) < tolerance:
                     count += 1
                 else:
                     self.multiplicities.append(count)
@@ -336,7 +340,7 @@ def first_order_wf(n,H,unperturb_wf,unperturb_erg,params,tolerance = 0.01, limit
                                 k = n-2
                             else:
                                 k = n-1
-                        ascending = False
+                            ascending = False
 
                         else:
                             truncate = True
