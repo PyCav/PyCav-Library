@@ -7,7 +7,7 @@ an optional argument (note that the gyromagnetic ratios are unity).
 
 Functions
 ---------
-__init__(spins, couplings, B_field = None)
+__init__(spins, couplings, B_field = None, scaling = [1.0,1.0,1.0])
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	Initialises the spin system object.
 
@@ -30,6 +30,12 @@ __init__(spins, couplings, B_field = None)
     List of 3-dimensional vectors, [B_x, B_y, B_z], representing the 
     magnetic flux density at each spin.
     e.g. [[3.0, 0, 0], [1.5, 0, 0]]
+    
+    *scaling: list, optional*
+    
+    List of floats which scale the spin-spin coupling in different directions.
+    scaling[0] scales the Sx-Sx coupling, [1] the Sy-Sy coupling and [2] the
+    Sz-Sz coupling.
 
 create_Hamiltonian()
 ^^^^^^^^^^^^^^^^^^^^
