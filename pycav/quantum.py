@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.integrate import quad
+import scipy.linalg as la
 from copy import copy
 import matplotlib.pyplot as plt
 
@@ -97,7 +98,7 @@ class SpinSystem:
     Hamiltonian as Kronecker products of the one-particle operators.
     """
 
-    def __init__(self, spins, couplings, B_field = None):
+    def __init__(self, spins, couplings, scaling = [1.0,1.0,1.0], B_field = None):
         """
         Parameters
         ----------
@@ -109,7 +110,11 @@ class SpinSystem:
             spin alignment.
         B_field: list, optional
             List of 3-dimensional vectors representing the magnetic flux 
-            density at each spin. 
+            density at each spin.
+        scaling: list, optional
+            List of floats which scale the spin-spin coupling in different directions.
+            scaling[0] scales the Sx-Sx coupling, [1] the Sy-Sy coupling
+            and [2] the Sz-Sz coupling.
         """
         try:
             self.N = spins.shape[0]
@@ -123,6 +128,7 @@ class SpinSystem:
         
         #interactions
         self.J = np.array(couplings, dtype = np.complex128)
+        self.scaling = np.array(scaling, dtype = np.complex128)
         if B_field is not None:
             self.B = np.array(B_field, dtype = np.complex128)
         else:
@@ -165,7 +171,7 @@ class SpinSystem:
                         term_y = np.kron(term_y, self.I[k])
                         term_z = np.kron(term_z, self.I[k])
                 #add this term to the Hamiltonian
-                self.H -= self.J[i,j]*(term_x + term_y + term_z)
+                self.H -= self.J[i,j]*(self.scaling[0]*term_x + self.scaling[1]*term_y + self.scaling[2]*term_z)
         #Include linear coupling to the magnetic field.
         if self.B is not None:
             for i in range(self.N):
@@ -213,8 +219,6 @@ class SpinSystem:
         else:
             self.get_energies()
             self.count_multiplicities()
-
-
 
 def numerov(x,dx,V,E,initial_values,params):
     steps = x.shape[0]-1
