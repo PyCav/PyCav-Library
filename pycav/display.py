@@ -12,7 +12,7 @@ def anim_to_html(anim,temp,fname,overwrite):
     if temp:
         anim._html5_video = anim.to_html5_video()
     else:
-        _fps = int(1000*anim.save_count/anim._interval)
+        _fps = int(1000/anim._interval)
         if _fps == 0:
             _fps = 20
         if not os.path.exists(fname):
