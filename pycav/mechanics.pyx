@@ -742,7 +742,7 @@ class System(object):
                 self.box.length = self.container.dimension
                 self.box.height = self.container.dimension
 
-    def run_for(self, time, dt=0.01):
+    def run_for(self, time, dt=0.01, on_step=None):
         """
         Run simulation for a certain amount of time(as measured in the simulated system's time).
         Recommended to use this instead of simulate(dt) for most situations.
@@ -752,6 +752,9 @@ class System(object):
             Time for which the simulation will go on for in the system's time
         dt: float
             Time steps taken.
+        on_step: function taking one unnamed argument of System
+            This system is passed to the function,
+            and the defined function will be performed at the end of every step
         """
         # Make pointer objects if not already created
         if self.display_forces:
@@ -769,6 +772,8 @@ class System(object):
             if self.visualize and self.visualizer_type == "vpython":
                 vpython.rate(150)
             self.simulate(dt)
+            if on_step is not None:
+                on_step(self)
             if self.stop_on_cycle:
                 if self._cycle_completed():
                     break

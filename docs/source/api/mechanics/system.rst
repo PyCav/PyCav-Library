@@ -80,7 +80,7 @@ update_vis()
 ^^^^^^^^^^^
 	Updates the visualization. Override this method to change the visualization method.
 
-run_for(time, dt=0.01)
+run_for(time, dt=0.01, on_step=None)
 ^^^^^^^^^^^
 	Run simulation for a certain amount of time(as measured in the simulated system's time). Recommended to use this instead of simulate(dt) for most situations, unless need some mechanism to stop simulation on some external condition. 
 
@@ -93,6 +93,11 @@ run_for(time, dt=0.01)
 	*dt: float*
 
 	Size of each step taken in time
+
+	*on_step: function taking one unnamed argument of System*
+
+	This system is passed to the function, and the defined function will be performed at the end of every step
+
 
 simulate(dt = 0.01)
 ^^^^^^^^^^^
