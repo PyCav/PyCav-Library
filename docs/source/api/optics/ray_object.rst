@@ -13,9 +13,9 @@ $$ R_{tot} = R_{z \\to r}^{-1} R_{\\theta_{12}} R_{z \\to r} $$
 
 \\(R_{\\theta_{12}}\\) performs a rotation by \\(\\theta_{12}\\) about the z axis this has the form:
 
-$$ R_{\\theta_{12}} = \\begin{array}{ccc}  \\cos (\\theta_{12}) & \\sin (\\theta_{12}) & 0 \\\\
-                                          -\\sin (\\theta_{12}) & \\cos (\\theta_{12}) & 0 \\\\
-                                          0                     &  0                   & 1 \\end{array} $$
+$$ R_{\\theta_{12}} = \\begin{bmatrix}  \\cos (\\theta_{12}) & \\sin (\\theta_{12}) & 0 \\\\
+                                      -\\sin (\\theta_{12}) & \\cos (\\theta_{12}) & 0 \\\\
+                                       0                     &  0                   & 1 \\end{bmatrix} $$
 
 \\(R_{z \\to r}\\) rotates the z axis onto the rotation axis, r. To form this transform let us consider rotating a unit vector \\(a\\) onto another \\(b\\). The axis of rotation is along \\(x = a \\times b\\). Using Rodrigues' rotation formula in its matrix form to rotate \\(a\\) about \\(x\\) by an angle \\(\\theta\\):
 
@@ -23,11 +23,11 @@ $$ \\mathbf{b} = \\left( I + \\sin(\\theta) X + (1 - \\cos(\\theta)) X^2 \\right
 
 Where \\(X\\) is the cross-product matrix for \\(x\\) defined by
 
-$$ X = \\frac{1}{|x|}\\begin{array}{ccc} 0 & -x_3 & x_2 \\\\
-                                         x_3 & 0 & -x_1 \\\\
-                                        -x_2 & x_1 & 0 \\end{array} $$
+$$ X = \\frac{1}{\\left| x \\right|}\\begin{bmatrix} 0 & -x_3 & x_2 \\\\
+                                                      x_3 & 0 & -x_1 \\\\
+                                                     -x_2 & x_1 & 0 \\end{bmatrix} $$
  
-Also \\(|x| = \\sin(\\theta)\\) and \\(a \\cdot b = \\cos(\\theta) \\)
+Also \\( \\left| x \\right| = \\sin(\\theta)\\) and \\(a \\cdot b = \\cos(\\theta) \\)
 
 Hence replacing \\(a\\) by a unit vector pointing along z and \\(b\\) by the normalised cross product of the unit surface normal and the unit incident wave vector, we obtain the required rotation matrix.
 
