@@ -1,7 +1,35 @@
-Caustics
+Caustics and Dispersion
 ============================
 
+Caustics
+^^^^^^^^
+
+A caustic is the envelope of light rays reflected or refracted by a curved surface or object, or the projection of that envelope of rays on another surface. An example of this is the light seen at the bottom of a swimming pool. If the second media has a larger refractive index then raised regions will focus the light as the entering light is bent towards the surface normal.
+
 .. image:: ../images/refraction.png
+
+Using the method described in the 'Ray Object page <http://pycav.readthedocs.io/en/latest/api/optics/ray_object.html>'__ , caustics can be simulated for a simple two media system.
+
+An example of its use can be found 'here <http://nbviewer.jupyter.org/github/PyCav/Demos/blob/master/Optics/Caustics.ipynb>'__
+
+The functions described below allow for easy use of the Ray Object to produce caustic images. The steps behind this method are as follows:
+
+1. A regular grid of normal incident rays are set up at the interface
+2. The rays are refracted based on the surface normal at incident point
+3. The rays are traced to the bottom of the medium, the viewing screen is placed at a depth h below the interface
+4. The screen is split into boxes and the number of rays in each box is counted i.e. a 2D histogram
+5. The image is then created or the steps 1-4 are run for different times to create a dynamic caustic simulation
+
+In terms of Optics module functions:
+
+ray_grid → rays_refract → single_time_image/evolve (→ ray_count) → caustic_image/caustic_anim
+
+Dispersion
+^^^^^^^^^
+
+Dispersion can also be investigated. This is simply done by giving different refractive indices to different collections of Ray objects. The same method described for forming the caustic map can then be used to track the paths of the different wavelengths. Then by choosing appropriate colourmaps, different wavelengths in the incident light can seen to have seperated in the resulting image.
+
+An example of programming this can be found 'here <http://nbviewer.jupyter.org/github/PyCav/Demos/blob/master/Optics/dispersion.ipynb>'
 
 Argument list
 ^^^^^^^^^^^^^^^^

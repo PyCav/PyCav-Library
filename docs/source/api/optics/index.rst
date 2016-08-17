@@ -14,7 +14,6 @@ In-depth Documentation
    
    ray_object
    caustics
-   dispersion
 
 
 The list below summarises the functions, their input arguments and their outputs for quick reference for the informed user:
