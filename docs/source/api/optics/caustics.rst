@@ -8,9 +8,9 @@ A caustic is the envelope of light rays reflected or refracted by a curved surfa
 
 .. image:: ../images/refraction.png
 
-Using the method described in the 'Ray Object page'_ , caustics can be simulated for a simple two media system.
+Using the method described in the Ray Object page_ , caustics can be simulated for a simple two media system.
 
-.. _Ray Object page: http://pycav.readthedocs.io/en/latest/api/optics/ray_object.html
+.. _page: http://pycav.readthedocs.io/en/latest/api/optics/ray_object.html
 
 An example of its use can be found here_.
 
