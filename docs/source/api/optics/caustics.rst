@@ -8,9 +8,13 @@ A caustic is the envelope of light rays reflected or refracted by a curved surfa
 
 .. image:: ../images/refraction.png
 
-Using the method described in the 'Ray Object page <http://pycav.readthedocs.io/en/latest/api/optics/ray_object.html>'__ , caustics can be simulated for a simple two media system.
+Using the method described in the 'Ray Object page'_ , caustics can be simulated for a simple two media system.
 
-An example of its use can be found 'here <http://nbviewer.jupyter.org/github/PyCav/Demos/blob/master/Optics/Caustics.ipynb>'__
+.. _Ray Object page: http://pycav.readthedocs.io/en/latest/api/optics/ray_object.html
+
+An example of its use can be found here_.
+
+.. _here: http://nbviewer.jupyter.org/github/PyCav/Demos/blob/master/Optics/Caustics.ipynb
 
 The functions described below allow for easy use of the Ray Object to produce caustic images. The steps behind this method are as follows:
 
@@ -29,7 +33,9 @@ Dispersion
 
 Dispersion can also be investigated. This is simply done by giving different refractive indices to different collections of Ray objects. The same method described for forming the caustic map can then be used to track the paths of the different wavelengths. Then by choosing appropriate colourmaps, different wavelengths in the incident light can seen to have seperated in the resulting image.
 
-An example of programming this can be found 'here <http://nbviewer.jupyter.org/github/PyCav/Demos/blob/master/Optics/dispersion.ipynb>'
+An example of programming this can be found in this notebook_.
+
+.. _notebook: http://nbviewer.jupyter.org/github/PyCav/Demos/blob/master/Optics/dispersion.ipynb
 
 Argument list
 ^^^^^^^^^^^^^^^^
