@@ -65,7 +65,7 @@ Below is an example of setting up such a wavepacket:
 .. code-block:: python
 
  def oneD_gaussian(x,mean,std,k0):
-     return np.exp(-((x-mean)**2)/(4*std**2)+ 1j*x*k0)/np.sqrt(4*np.pi*std**2)
+     return np.exp(-((x-mean)**2)/(4*std**2)+ 1j*x*k0)/(2*np.pi*std**2)**0.25
 
  dt = 0.01
  N_t = 2000
