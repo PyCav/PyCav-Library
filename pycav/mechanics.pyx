@@ -3,6 +3,7 @@ An object oriented library to allow quick prototyping of simulations.
 """
 from __future__ import division, print_function
 import numpy as np
+import NotificationCenter as nc
 from random import *
 # This is here so that vpython can be imported later on if not yet imported but needed,
 # and this method is faster than importing every time it's needed.
@@ -106,29 +107,16 @@ def _cross(vec1, vec2):
     return (np.array([x, y, z]))
 
 
-class Particle(object):
-    """
-    Class representing a particle, which can be attached to a spring.
-    Not tied to any visualisation method.
-    """
-
+class _BaseObject(object):
     # Getters and setters for certain properties so that visualization is only updated if it has changed.
-
     @property
     def color(self):
         return self._color
     @color.setter
     def color(self, color):
         self._color = color
-        self._vis_values_changed = True
-
-    @property
-    def radius(self):
-        return self._radius
-    @radius.setter
-    def radius(self, radius):
-        self._radius = radius
-        self._vis_values_changed = True
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="color_changed")
 
     @property
     def alpha(self):
@@ -136,16 +124,35 @@ class Particle(object):
     @alpha.setter
     def alpha(self, alpha):
         self._alpha = alpha
-        self._vis_values_changed = True
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="alpha_changed")
 
+    def __init__(self):
+        self.notification_center = nc.NotificationCenter()
+
+
+class Particle(_BaseObject):
+    """
+    Class representing a particle, which can be attached to a spring.
+    Not tied to any visualisation method.
+    """
     @property
     def make_trail(self):
         return self._make_trail
     @make_trail.setter
     def make_trail(self, make_trail):
         self._make_trail = make_trail
-        self._vis_values_changed = True
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="make_trail_changed")
 
+    @property
+    def radius(self):
+        return self._radius
+    @radius.setter
+    def radius(self, radius):
+        self._radius = radius
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="radius_changed")
 
     def __init__(self, pos=None, v=None, radius=1.,
         inv_mass=0., color=None, alpha=1., fixed=False, applied_force=no_force,
@@ -174,6 +181,7 @@ class Particle(object):
         make_trail: boolean
             Whether the particle will make a trail or not
         """
+        _BaseObject.__init__(self)
         if pos is not None:
             self.pos = pos
         else:
@@ -190,7 +198,6 @@ class Particle(object):
             self._color = [1, 0, 0]
         self._make_trail = make_trail
         self._alpha = alpha
-        self._vis_values_changed = False
         self.fixed = fixed
         self.applied_force = applied_force
         self.total_force = np.array([0, 0, 0])
@@ -254,7 +261,7 @@ class Particle(object):
         return None
 
 
-class Container(object):
+class Container(_BaseObject):
     """
     Class describing a cubic box which particles can be in.
     """
@@ -267,27 +274,11 @@ class Container(object):
     def dimension(self, dimension):
         """Setter so that we know when dimensions have changed"""
         self._dimension = dimension
-        self.size_changed = True
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="dimension_changed")
 
 
     # Getters and setters for certain properties so that visualization is only updated if it has changed.
-
-    @property
-    def alpha(self):
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, alpha):
-        self._alpha = alpha
-
-    @property
-    def color(self):
-        return self._color
-
-    @color.setter
-    def color(self, color):
-        self._color = color
-        self._vis_values_changed = True
 
     @property
     def _origin_pos(self):
@@ -316,19 +307,18 @@ class Container(object):
         alpha: float
             Alpha of particle, 1 is completely opaque, 0 is completely transparent, used in visualisation
         """
+        _BaseObject.__init__(self)
         if pos is not None:
             self.pos = pos
         else:
             self.pos = np.array([0, 0, 0])
         self._dimension = dimension
-        self.size_changed = False
         if color is not None:
             self._color = color
         else:
             self._color = [1, 1, 1]
         self._alpha = alpha
         self._visualized = False
-        self._vis_values_changed = False
 
     def contains(self, particle):
         """
@@ -377,7 +367,7 @@ class _Domain(Container):
         return True
 
 
-class Spring(object):
+class Spring(_BaseObject):
     """
     Class representing a spring. Not tied to any visualisation method.
     """
@@ -396,31 +386,14 @@ class Spring(object):
         """
         return self.particle_1.pos
 
-    # Getters and setters for certain properties so that visualization is only updated if it has changed.
     @property
     def radius(self):
         return self._radius
     @radius.setter
     def radius(self, radius):
         self._radius = radius
-        self._vis_values_changed = True
-
-    @property
-    def alpha(self):
-        return self._alpha
-    @alpha.setter
-    def alpha(self, alpha):
-        self._alpha = alpha
-        self._vis_values_changed = True
-
-    @property
-    def color(self):
-        return self._color
-    @color.setter
-    def color(self, color):
-        self._color = color
-        self._vis_values_changed = True
-
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="radius_changed")
 
     def __init__(self, particle_1, particle_2, k, l0=None, radius=0.5, color=None, alpha=1.):
         """
@@ -441,6 +414,7 @@ class Spring(object):
         alpha: float
             Alpha of particle, 1 is completely opaque, 0 is completely transparent, used in visualisation
         """
+        _BaseObject.__init__(self)
         self.particle_1 = particle_1
         self.particle_2 = particle_2
         self.k = k
@@ -455,7 +429,6 @@ class Spring(object):
             self.l0 = l0
         else:
             self.l0 = np.linalg.norm(self.particle_1.pos - self.particle_2.pos)
-        self._vis_values_changed = False
 
     def force_on(self, particle, if_at=np.array([None])):
         """
@@ -478,29 +451,10 @@ class Spring(object):
         return np.array([0, 0, 0])
 
 
-class PointerArrow(object):
+class PointerArrow(_BaseObject):
     """
     Class representing an arrow/pointer, that isn't tied to any specific visualization method/library.
     """
-
-
-    # Getters and setters for certain properties so that visualization is only updated if it has changed.
-
-    @property
-    def alpha(self):
-        return self._alpha
-    @alpha.setter
-    def alpha(self, alpha):
-        self._alpha = alpha
-        self._vis_values_changed = True
-
-    @property
-    def color(self):
-        return self._color
-    @color.setter
-    def color(self, color):
-        self._color = color
-        self._vis_values_changed = True
 
     @property
     def shaftwidth(self):
@@ -508,7 +462,8 @@ class PointerArrow(object):
     @shaftwidth.setter
     def shaftwidth(self, shaftwidth):
         self._shaftwidth = shaftwidth
-        self._vis_values_changed = True
+        self.notification_center.post_notification(sender=self,
+                                                  with_name="shaftwidth_changed")
 
     def __init__(self, pos, axis, shaftwidth=1, color=None, alpha=1):
         """
@@ -525,6 +480,7 @@ class PointerArrow(object):
         alpha: float
             Alpha of particle, 1 is completely opaque, 0 is completely transparent, used in visualisation
         """
+        _BaseObject.__init__(self)
         self.pos = pos
         self.axis = axis
         self._shaftwidth = shaftwidth
@@ -533,7 +489,6 @@ class PointerArrow(object):
             self._color = color
         else:
             self._color = [1, 1, 1]
-        self._vis_values_changed = False
         self._visualized = False
 
 
@@ -630,6 +585,9 @@ class System(object):
         self.pressure = 0           # Pressure is set to 0 at the start
         self.steps = 0              # Number of steps taken, is set to 0 at the start
         self.pressure_history = []  # History of instantaneous values of pressure
+        self.notification_center = nc.NotificationCenter()
+        self.observers = []
+        self._container_dimension_observer = None
         if display_forces:
             self._assign_pointers()
         if visualize:
@@ -637,6 +595,28 @@ class System(object):
             self.create_vis(canvas=canvas)
         else:
             self.visualizer_type = None
+        if self.display_forces:
+            self._assign_pointers()
+        if self.visualize:
+            self.create_vis()
+        if self.collides and self.container:
+            self._setup_domains()
+            self._assign_particles_to_domains()
+            if self._container_dimension_observer is None:
+                def domains_update(sender, notification_name, info, self=self):
+                    self._setup_domains()
+                    self._assign_particles_to_domains()
+
+                self._container_dimension_observer = self.notification_center.add_observer(with_block=domains_update,
+                                                          for_name="dimension_changed",
+                                                          for_sender=self.container)
+
+    def __del__(self):
+        for observer in self.observers:
+            self.notification_center.remove_observer(observer)
+        if self._container_dimension_observer is not None:
+            self.notification_center.remove_observer(self._container_dimension_observer)
+        object.__del__()
 
     def create_vis(self, canvas=None):
         """
@@ -666,6 +646,38 @@ class System(object):
                     opacity=particle.alpha,
                     display=self.scene,
                     make_trail=particle.make_trail))
+
+                # We will create functions so that we can update visualization properties only when needed using pynotificationcenter
+                # For more detail on how this is done, read the documentation for that library.
+                def on_update_opacity(sender, with_name, with_info, self=self,
+                                    particle=particle, sphere=self.spheres[-1]):
+                    sphere.opacity = particle.alpha
+
+                def on_update_radius(sender, with_name, with_info, self=self,
+                                    particle=particle, sphere=self.spheres[-1]):
+                    sphere.radius = particle.radius
+
+                def on_update_color(sender, with_name, with_info, self=self,
+                                    particle=particle, sphere=self.spheres[-1]):
+                    sphere.color = vector_from(particle.color)
+
+                def on_update_trail(sender, with_name, with_info, self=self,
+                                    particle=particle, sphere=self.spheres[-1]):
+                    sphere.make_trail = particle.make_trail
+
+                # Add observers to the notification center
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_opacity,
+                                        for_name="alpha_changed",
+                                        for_sender=particle))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_radius,
+                                        for_name="radius_changed",
+                                        for_sender=particle))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_color,
+                                        for_name="color_changed",
+                                        for_sender=particle))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_trail,
+                                        for_name="make_trail_changed",
+                                        for_sender=particle))
                 particle._visualized = True
         # Draw springs if they aren't drawn yet
         for spring in self.springs:
@@ -676,6 +688,31 @@ class System(object):
                     opacity=spring.alpha,
                     color=vector_from(spring.color),
                     display=self.scene))
+
+                # We will create functions so that we can update visualization properties only when needed using pynotificationcenter
+                # For more detail on how this is done, read the documentation for that library.
+                def on_update_opacity(sender, with_name, with_info, self=self,
+                                    spring=spring, helix=self.helices[-1]):
+                    helix.opacity = spring.alpha
+
+                def on_update_radius(sender, with_name, with_info, self=self,
+                                    spring=spring, helix=self.helices[-1]):
+                    helix.radius = spring.radius
+
+                def on_update_color(sender, with_name, with_info, self=self,
+                                    spring=spring, helix=self.helices[-1]):
+                    helix.color = vector_from(helices.color)
+
+                # Add observers to the notification center
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_opacity,
+                                        for_name="alpha_changed",
+                                        for_sender=spring))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_radius,
+                                        for_name="radius_changed",
+                                        for_sender=spring))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_color,
+                                        for_name="color_changed",
+                                        for_sender=spring))
                 spring._visualized = True
         # Draw pointers if they aren't drawn yet
         for pointer in self.pointerarrows:
@@ -686,6 +723,31 @@ class System(object):
                     opacity=pointer.alpha,
                     color=vector_from(pointer.color),
                     display=self.scene))
+
+                # We will create functions so that we can update visualization properties only when needed using pynotificationcenter
+                # For more detail on how this is done, read the documentation for that library.
+                def on_update_opacity(sender, with_name, with_info, self=self,
+                                    pointer=pointer, arrow=self.arrows[-1]):
+                    arrow.opacity = pointer.alpha
+
+                def on_update_sw(sender, with_name, with_info, self=self,
+                                    pointer=pointer, arrow=self.arrows[-1]):
+                    arrow.radius = pointer.radius
+
+                def on_update_color(sender, with_name, with_info, self=self,
+                                    pointer=pointer, arrow=self.arrows[-1]):
+                    arrow.color = vector_from(pointer.color)
+
+                # Add observers to the notification center
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_opacity,
+                                        for_name="alpha_changed",
+                                        for_sender=arrow))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_sw,
+                                        for_name="shaftwidth_changed",
+                                        for_sender=arrow))
+                self.observers.append(self.notification_center.add_observer(with_block=on_update_color,
+                                        for_name="color_changed",
+                                        for_sender=arrow))
                 pointer._visualized = True
         # Draw container if exists
         if not self.box and self.container:
@@ -695,6 +757,30 @@ class System(object):
                 height=self.container.dimension,
                 color=vector_from(self.container.color),
                 opacity=self.container.alpha)
+
+            # We will create functions so that we can update visualization properties only when needed using pynotificationcenter
+            # For more detail on how this is done, read the documentation for that library.
+            def on_update_opacity(sender, with_name, with_info, self=self,
+                                container=self.container, box=self.box):
+                box.opacity = self.container.alpha
+            def on_update_dimensions(sender, with_name, with_info, self=self,
+                                container=self.container, box=self.box):
+                box.width = self.container.dimension
+                box.length = self.container.dimension
+                box.height = self.container.dimension
+            def on_update_color(sender, with_name, with_info, self=self,
+                                container=self.container, box=self.box):
+                box.color = vector_from(self.container.color)
+            # Add observers to the notification center
+            self.observers.append(self.notification_center.add_observer(with_block=on_update_opacity,
+                                    for_name="alpha_changed",
+                                    for_sender=self.container))
+            self.observers.append(self.notification_center.add_observer(with_block=on_update_dimensions,
+                                    for_name="dimension_changed",
+                                    for_sender=self.container))
+            self.observers.append(self.notification_center.add_observer(with_block=on_update_color,
+                                    for_name="color_changed",
+                                    for_sender=self.container))
 
     def update_vis(self):
         """
@@ -707,40 +793,16 @@ class System(object):
         # Update display of particles(rendered as spheres)
         for (index, __) in enumerate(self.spheres):
             self.spheres[index].pos = vector_from(self.particles[index].pos)
-            if self.particles[index]._vis_values_changed:
-                self.particles[index]._vis_values_changed = False
-                self.spheres[index].radius = self.particles[index].radius
-                self.spheres[index].color = vector_from(self.particles[index].color)
-                self.spheres[index].opacity = self.particles[index].alpha
-                self.spheres[index].make_trail = self.particles[index].make_trail
         # Update display of springs(rendered as helices)
         for (index, __) in enumerate(self.helices):
             self.helices[index].pos = vector_from(self.springs[index].pos)
             self.helices[index].axis = vector_from(self.springs[index].axis)
-            if self.springs[index]._vis_values_changed:
-                self.springs[index]._vis_values_changed = False
-                self.helices[index].radius = self.springs[index].radius
-                self.helices[index].color = vector_from(self.springs[index].color)
-                self.helices[index].opacity = self.springs[index].alpha
         # Update display of pointers(rendered as arrows)
         for (index, __) in enumerate(self.arrows):
             self.arrows[index].pos = vector_from(self.pointerarrows[index].pos)
             self.arrows[index].axis = vector_from(self.pointerarrows[index].axis)
-            if self.pointerarrows[index]._vis_values_changed:
-                self.arrows[index].shaftwidth = self.pointerarrows[index].shaftwidth
-                self.arrows[index].color = vector_from(self.pointerarrows[index].color)
-                self.arrows[index].opacity = self.pointerarrows[index].alpha
         if self.box:
             self.box.pos = vector_from(self.container.pos)
-            if self.container._vis_values_changed:
-                self.container._vis_values_changed = False
-                self.box.color = vector_from(self.container.color)
-                self.box.opacity = self.container.alpha
-            if self.container.size_changed:
-                self.container.size_changed = False
-                self.box.width = self.container.dimension
-                self.box.length = self.container.dimension
-                self.box.height = self.container.dimension
 
     def run_for(self, time, dt=0.01, on_step=None):
         """
@@ -826,6 +888,13 @@ class System(object):
             if self.collides and self.container:
                 self._setup_domains()
                 self._assign_particles_to_domains()
+                if self._container_dimension_observer is None:
+                    def domains_update(sender, notification_name, info, self=self):
+                        self._setup_domains()
+                        self._assign_particles_to_domains()
+                    self._container_dimension_observer = self.notification_center.add_observer(with_block=domains_update,
+                                                              for_name="dimension_changed",
+                                                              for_sender=self.container)
 
         # Make pointers appropriate sizes according to forces on particles.
         if self.display_forces:
@@ -1057,11 +1126,6 @@ class System(object):
                         self._collision(particle, other_particle)
 
     def _collision_detection_with_domains(self):
-        # Remake domains if the container's size has changed
-        if self.container.size_changed:
-            self._setup_domains()
-            self._assign_particles_to_domains()
-            self.container.size_changed = False
         # Assign particles to domains every 3 steps.
         # (Don't need to do every step, as particles are unlikely to move to different domains in 3 steps time.
         # Should be fine as if particles are moving so quickly, simulation is inacurrate anyway.)
