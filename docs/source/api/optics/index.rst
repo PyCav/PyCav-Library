@@ -6,6 +6,10 @@ Introduction to the Optics module
 
 This module contains functions for use in geometric optics problems. The example usage is for caustics, such those observed at the bottom of a swimming pool. As we are working in the geometric optics limit, this simply requires manipulation of vectors. Refraction is a rotation about a axis perpendicular to the surface normal and incoming wave vector by an angle determined by Snell's law.
 
+You can find the source code for this module on the GitHub_.
+
+.. _GitHub: https://github.com/PyCav/PyCav-Library/blob/master/pycav/optics.py
+
 In-depth Documentation
 -------
 

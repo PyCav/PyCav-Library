@@ -6,6 +6,10 @@ Introduction to the Partial Differential Equation module
 
 This module contains functions for use in solving PDEs, namely the wave equation, the heat equation and the time dependent Schrödinger equation. These are solved using the Lax-Wendroff, Crank-Nicolson and Split Step Fourier methods respectively. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. A short introduction to finite difference methods will also be presented.
 
+You can find the source code for this module on the GitHub_.
+
+.. _GitHub: https://github.com/PyCav/PyCav-Library/blob/master/pycav/pde.py
+
 Introductory Documentation
 -------
 

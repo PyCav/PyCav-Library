@@ -6,6 +6,10 @@ Introduction to the Quantum module
 
 This module contains functions for use in 1st order perturbation theory calculations and for solving 1d boundary value problems using the Shooting method. It also contains a class designed to represent systems of interacting spins. Documentation explaining the use of each function and the algorithms used within will be presented in individual sections. 
 
+You can find the source code for this module on the GitHub_.
+
+.. _GitHub: https://github.com/PyCav/PyCav-Library/blob/master/pycav/quantum.py
+
 In-depth Documentation
 -------
 
