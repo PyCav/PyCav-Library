@@ -3,17 +3,24 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-
 def green():
-	import random
+    """
+    Where would Physicists be without Green functions?
 
-	from urllib.request import urlopen
-	from bs4 import BeautifulSoup
+    Parameters
+    ----------
+    No parameters, just sit back and enjoy the ride.
+    """
 
-	url = "https://raw.githubusercontent.com/genneth/dave-green-facts/master/index.html"
-	html = urlopen(url)
+    import random
 
-	soup = BeautifulSoup(html, 'html.parser')
-	list = soup.find_all('li')
+    from urllib.request import urlopen
+    from bs4 import BeautifulSoup
 
-	print(random.choice(list).text.replace('Dave Green', "\033[0;32mDave Green\033[0m"))
+    url = "https://raw.githubusercontent.com/genneth/dave-green-facts/master/index.html"
+    html = urlopen(url)
+
+    soup = BeautifulSoup(html, 'html.parser')
+    list = soup.find_all('li')
+
+    print(random.choice(list).text.replace('Dave Green', "\033[0;32mDave Green\033[0m"))

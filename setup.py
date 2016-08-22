@@ -12,8 +12,14 @@ except ImportError:
 mechanics = None
 if have_cython:
     mechanics = Extension('pycav.mechanics', ['pycav/mechanics.pyx'])
+    optics = Extension('pycav.optics', ['pycav/optics.pyx'])
+    pde = Extension('pycav.pde', ['pycav/pde.pyx'])
+    quantum = Extension('pycav.quantum', ['pycav/quantum.pyx'])
 else:
     mechanics = Extension('pycav.mechanics', ['pycav/mechanics.c'])
+    optics = Extension('pycav.optics', ['pycav/optics.c'])
+    pde = Extension('pycav.pde', ['pycav/pde.c'])
+    quantum = Extension('pycav.quantum', ['pycav/quantum.c'])
 
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
@@ -57,7 +63,7 @@ setup(
 
     keywords='physics simulation education',
 
-    ext_modules=[mechanics],
+    ext_modules=[mechanics, pde],
     packages=['pycav'],
 
     install_requires=['numpy>=1.1',
