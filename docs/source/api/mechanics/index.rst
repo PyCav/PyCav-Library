@@ -19,7 +19,7 @@ The mechanics module provides the infrastructure to create simple systems consis
 
 This creates a system consisting of a 100 particles which can collide with each other within a cubic container of unit size, which is then run for 10 seconds in the system's time.
 
-You can find the source code for the Mechanics module on the _GitHub.
+You can find the source code for the Mechanics module on the GitHub_.
 
 .. _GitHub: https://github.com/PyCav/PyCav-Library/blob/master/pycav/mechanics.pyx
 
