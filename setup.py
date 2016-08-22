@@ -26,7 +26,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=cmds,
     name='PyCav',
-   
+
     description='PyCav module',
     long_description=long_description,
 
@@ -62,6 +62,7 @@ setup(
 
     install_requires=['numpy>=1.1',
     'matplotlib',
-    'scipy'],
+    'scipy',
+    'notificationcenter'],
 
 )
