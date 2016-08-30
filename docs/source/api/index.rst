@@ -10,3 +10,4 @@ PyCav currently contains these modules. Click on their names to read their API d
    quantum/index
    pde/index
    optics/index
+   display/index
