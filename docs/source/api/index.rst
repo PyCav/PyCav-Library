@@ -8,3 +8,4 @@ PyCav currently contains these modules. Click on their names to read their API d
 
    mechanics/index
    quantum/index
+   pde/index

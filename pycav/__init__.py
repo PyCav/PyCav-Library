@@ -10,7 +10,7 @@ def green():
 	from urllib.request import urlopen
 	from bs4 import BeautifulSoup
 
-	url = "http://www.srcf.ucam.org/davegreenfacts/"
+	url = "https://raw.githubusercontent.com/genneth/dave-green-facts/master/index.html"
 	html = urlopen(url)
 
 	soup = BeautifulSoup(html, 'html.parser')
