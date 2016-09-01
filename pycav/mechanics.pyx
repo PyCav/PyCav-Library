@@ -599,17 +599,6 @@ class System(object):
             self._assign_pointers()
         if self.visualize:
             self.create_vis()
-        if self.collides and self.container:
-            self._setup_domains()
-            self._assign_particles_to_domains()
-            if self._container_dimension_observer is None:
-                def domains_update(sender, notification_name, info, self=self):
-                    self._setup_domains()
-                    self._assign_particles_to_domains()
-
-                self._container_dimension_observer = self.notification_center.add_observer(with_block=domains_update,
-                                                          for_name="dimension_changed",
-                                                          for_sender=self.container)
 
     def __del__(self):
         for observer in self.observers:
@@ -741,13 +730,13 @@ class System(object):
                 # Add observers to the notification center
                 self.observers.append(self.notification_center.add_observer(with_block=on_update_opacity,
                                         for_name="alpha_changed",
-                                        for_sender=arrow))
+                                        for_sender=self.arrows[-1]))
                 self.observers.append(self.notification_center.add_observer(with_block=on_update_sw,
                                         for_name="shaftwidth_changed",
-                                        for_sender=arrow))
+                                        for_sender=self.arrows[-1]))
                 self.observers.append(self.notification_center.add_observer(with_block=on_update_color,
                                         for_name="color_changed",
-                                        for_sender=arrow))
+                                        for_sender=self.arrows[-1]))
                 pointer._visualized = True
         # Draw container if exists
         if not self.box and self.container:
@@ -870,6 +859,9 @@ class System(object):
                 velocity = speed * normalized(np.array([1 * random() - 0.5, 1 * random() - 0.5, 1 * random() - 0.5]))
                 particle = Particle(pos=position, v=velocity, inv_mass=inv_mass, radius=radius)
                 self.particles.append(particle)
+            if self.collides and self.container:
+                self._setup_domains()
+                self._assign_particles_to_domains()
 
     def simulate(self, dt=0.01):
         """
@@ -888,13 +880,6 @@ class System(object):
             if self.collides and self.container:
                 self._setup_domains()
                 self._assign_particles_to_domains()
-                if self._container_dimension_observer is None:
-                    def domains_update(sender, notification_name, info, self=self):
-                        self._setup_domains()
-                        self._assign_particles_to_domains()
-                    self._container_dimension_observer = self.notification_center.add_observer(with_block=domains_update,
-                                                              for_name="dimension_changed",
-                                                              for_sender=self.container)
 
         # Make pointers appropriate sizes according to forces on particles.
         if self.display_forces:
@@ -967,6 +952,13 @@ class System(object):
         and the step should be smaller than domain_size by at least 1 particle_radius.
         The actual values chosen here are just what seem to work well, do tinker with them
         """
+        if self._container_dimension_observer is None:
+                    def domains_update(sender, notification_name, info, self=self):
+                        self._setup_domains()
+                        self._assign_particles_to_domains()
+                    self._container_dimension_observer = self.notification_center.add_observer(with_block=domains_update,
+                                                              for_name="dimension_changed",
+                                                              for_sender=self.container)
         self.domain_size = self.particles[0].radius * 17
         step = self.particles[0].radius * 15.5
         x1 = np.arange(- self.container.dimension/2 + self.container.pos[0], (1.05 * self.container.dimension + self.container.pos[0])/2, step)
